@@ -7,9 +7,11 @@ type Track = {
   title: string;
   subtitle: string;
   audioUrl: string;
-  color: string;
-  emoji: string;
+  coverUrl: string;
 };
+
+const logoUrl =
+  "https://lykkeliga.dk/wp-content/uploads/2025/12/lykkeliga_logo_blaa.svg";
 
 const tracks: Track[] = [
   {
@@ -17,8 +19,7 @@ const tracks: Track[] = [
     title: "Hop hop hop",
     subtitle: "LykkeLiga",
     audioUrl: "https://lykkeliga.dk/wp-content/uploads/2026/03/Hop-hop-hop.mp3",
-    color: "from-orange-400 to-pink-400",
-    emoji: "🧡",
+    coverUrl: "https://lykkeliga.dk/wp-content/uploads/2026/03/Hophophop.jpg",
   },
   {
     id: "nede-med-at-svede",
@@ -26,8 +27,8 @@ const tracks: Track[] = [
     subtitle: "LykkeLiga",
     audioUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/Nede-med-at-svede.mp3",
-    color: "from-cyan-400 to-blue-500",
-    emoji: "💦",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Nedemedatsvede.jpg",
   },
   {
     id: "sammen-med-lars",
@@ -35,8 +36,8 @@ const tracks: Track[] = [
     subtitle: "LykkeLiga",
     audioUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/Sammen-med-Lars-er-vi-superstars.mp3",
-    color: "from-fuchsia-400 to-purple-500",
-    emoji: "⭐",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Sammenmedlars.jpg",
   },
   {
     id: "scoresangen",
@@ -44,8 +45,7 @@ const tracks: Track[] = [
     subtitle: "LykkeLiga",
     audioUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/Scoresangen.mp3",
-    color: "from-lime-400 to-emerald-500",
-    emoji: "🥳",
+    coverUrl: "https://lykkeliga.dk/wp-content/uploads/2026/03/Scoresangen.jpg",
   },
 ];
 
@@ -74,9 +74,9 @@ function IconButton({
       className={[
         "inline-flex items-center justify-center rounded-full transition active:scale-95",
         big
-          ? "h-16 w-16 bg-slate-900 text-white shadow-lg"
-          : "h-12 w-12 bg-white text-slate-900 shadow-sm border border-slate-200",
-        disabled ? "opacity-40 cursor-not-allowed" : "hover:opacity-90",
+          ? "h-14 w-14 bg-[#0B1B46] text-white shadow-lg"
+          : "h-11 w-11 border border-slate-200 bg-white text-[#0B1B46] shadow-sm",
+        disabled ? "cursor-not-allowed opacity-35" : "hover:opacity-90",
       ].join(" ")}
     >
       {children}
@@ -99,23 +99,27 @@ function TrackCard({
     <button
       onClick={onSelect}
       className={[
-        "text-left rounded-[28px] overflow-hidden border shadow-sm bg-white transition hover:-translate-y-0.5 active:scale-[0.99]",
-        isActive ? "border-slate-900 ring-2 ring-slate-900/10" : "border-slate-200",
+        "group overflow-hidden rounded-[28px] border bg-white text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md",
+        isActive ? "border-[#0B1B46] ring-1 ring-[#0B1B46]/10" : "border-slate-200",
       ].join(" ")}
     >
-      <div className={`h-40 bg-gradient-to-br ${track.color} relative`}>
-        <div className="absolute inset-0 flex items-center justify-center text-6xl">
-          {track.emoji}
-        </div>
+      <div className="relative aspect-square overflow-hidden bg-slate-100">
+        <img
+          src={track.coverUrl}
+          alt={track.title}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+        />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/30 to-transparent" />
+
         {isActive && (
-          <div className="absolute top-3 right-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900">
+          <div className="absolute right-3 top-3 rounded-full bg-white/92 px-3 py-1 text-xs font-semibold text-[#0B1B46] shadow-sm">
             {isPlaying ? "Spiller" : "Valgt"}
           </div>
         )}
       </div>
 
       <div className="p-5">
-        <div className="text-lg font-semibold leading-tight text-slate-900">
+        <div className="line-clamp-2 text-lg font-semibold leading-tight text-slate-900">
           {track.title}
         </div>
         <div className="mt-1 text-sm text-slate-500">{track.subtitle}</div>
@@ -151,12 +155,9 @@ export default function Page() {
     setDuration(0);
 
     if (isPlaying) {
-      audio
-        .play()
-        .then(() => {})
-        .catch(() => {
-          setIsPlaying(false);
-        });
+      audio.play().catch(() => {
+        setIsPlaying(false);
+      });
     }
   }, [currentIndex, currentTrack.audioUrl, isPlaying]);
 
@@ -243,61 +244,106 @@ export default function Page() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-yellow-50 via-white to-pink-50 pb-44 text-slate-900">
+    <main className="min-h-screen bg-[#F6F3EB] text-slate-900">
       <audio ref={audioRef} preload="metadata" />
 
-      <div className="mx-auto max-w-6xl px-5 py-6 md:px-8 md:py-10">
-        <section className="rounded-[32px] bg-white border border-slate-200 shadow-sm overflow-hidden">
-          <div className="grid gap-8 p-8 md:grid-cols-[1.2fr_0.8fr] md:p-10">
+      <div className="mx-auto max-w-7xl px-5 pb-40 pt-6 md:px-8 md:pt-10">
+        <header className="mb-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <img
+              src={logoUrl}
+              alt="LykkeLiga logo"
+              className="h-11 w-auto md:h-12"
+            />
             <div>
-              <div className="inline-flex rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+              <div className="text-sm uppercase tracking-[0.2em] text-slate-500">
+                Musik
+              </div>
+              <div className="text-xl font-semibold tracking-tight text-[#0B1B46] md:text-2xl">
+                LykkeLiga JukeBox
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-500 md:block">
+            {tracks.length} numre
+          </div>
+        </header>
+
+        <section className="grid gap-8 rounded-[36px] border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-[1.1fr_0.9fr] md:p-8 lg:p-10">
+          <div className="flex flex-col justify-between">
+            <div>
+              <div className="inline-flex rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600">
                 LykkeLiga Musik
               </div>
 
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-950 md:text-6xl">
-                En glad lille jukebox
+              <h1 className="mt-5 max-w-3xl text-4xl font-semibold tracking-tight text-[#0B1B46] md:text-6xl">
+                Et sted for alle jeres sange
               </h1>
 
-              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
-                Tryk på en sang og spil. Eller tryk på “Spil alle” og lad musikken køre.
+              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
+                Spil en enkelt sang, eller lad LykkeLiga JukeBox køre videre gennem hele samlingen.
               </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button
-                  onClick={playAll}
-                  className="rounded-full bg-slate-900 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-[0.99]"
-                >
-                  Spil alle
-                </button>
-
-                <button
-                  onClick={togglePlayPause}
-                  className="rounded-full bg-slate-100 px-6 py-3 text-base font-semibold text-slate-900 transition hover:bg-slate-200 active:scale-[0.99]"
-                >
-                  {isPlaying ? "Pause" : "Play"}
-                </button>
-              </div>
             </div>
 
-            <div className={`rounded-[28px] bg-gradient-to-br ${currentTrack.color} p-6 text-white shadow-inner`}>
-              <div className="text-sm font-medium opacity-90">Spiller nu</div>
-              <div className="mt-6 text-7xl">{currentTrack.emoji}</div>
-              <div className="mt-6 text-2xl font-semibold leading-tight">
-                {currentTrack.title}
-              </div>
-              <div className="mt-2 text-white/85">{currentTrack.subtitle}</div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button
+                onClick={playAll}
+                className="rounded-full bg-[#0B1B46] px-6 py-3 text-base font-semibold text-white shadow-md transition hover:opacity-90 active:scale-[0.99]"
+              >
+                Spil alle
+              </button>
 
-              <div className="mt-8 rounded-2xl bg-white/20 px-4 py-3 text-sm">
-                {playAllMode ? "Playlist mode er slået til" : "Enkelt nummer"}
+              <button
+                onClick={togglePlayPause}
+                className="rounded-full border border-slate-200 bg-white px-6 py-3 text-base font-semibold text-[#0B1B46] transition hover:bg-slate-50 active:scale-[0.99]"
+              >
+                {isPlaying ? "Pause" : "Afspil"}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
+            <div className="overflow-hidden rounded-[28px] bg-slate-100 shadow-sm">
+              <img
+                src={currentTrack.coverUrl}
+                alt={currentTrack.title}
+                className="aspect-square h-full w-full object-cover"
+              />
+            </div>
+
+            <div className="flex flex-col justify-between rounded-[28px] bg-[#0B1B46] p-6 text-white shadow-sm">
+              <div>
+                <div className="text-sm text-white/70">Spiller nu</div>
+                <h2 className="mt-4 text-3xl font-semibold leading-tight">
+                  {currentTrack.title}
+                </h2>
+                <p className="mt-2 text-white/75">{currentTrack.subtitle}</p>
+              </div>
+
+              <div className="mt-8">
+                <div className="rounded-2xl bg-white/10 px-4 py-3 text-sm text-white/85">
+                  {playAllMode ? "Playlist er slået til" : "Ét nummer ad gangen"}
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="mt-8">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-2xl font-semibold tracking-tight">Sange</h2>
-            <div className="text-sm text-slate-500">{tracks.length} numre</div>
+        <section className="mt-10">
+          <div className="mb-5 flex items-end justify-between">
+            <div>
+              <div className="text-sm uppercase tracking-[0.2em] text-slate-500">
+                Samling
+              </div>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#0B1B46]">
+                Sange
+              </h2>
+            </div>
+
+            <div className="hidden text-sm text-slate-500 md:block">
+              {tracks.length} udgivelser
+            </div>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -315,17 +361,17 @@ export default function Page() {
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-4 py-4 md:px-6">
-          <div className="grid gap-4 md:grid-cols-[1.3fr_1fr_1.1fr] md:items-center">
-            <div className="flex items-center gap-4 min-w-0">
-              <div
-                className={`h-16 w-16 shrink-0 rounded-2xl bg-gradient-to-br ${currentTrack.color} flex items-center justify-center text-3xl`}
-              >
-                {currentTrack.emoji}
-              </div>
+        <div className="mx-auto max-w-7xl px-4 py-4 md:px-6">
+          <div className="grid gap-4 md:grid-cols-[1.25fr_0.9fr_1.1fr] md:items-center">
+            <div className="flex min-w-0 items-center gap-4">
+              <img
+                src={currentTrack.coverUrl}
+                alt={currentTrack.title}
+                className="h-16 w-16 shrink-0 rounded-2xl object-cover shadow-sm"
+              />
 
               <div className="min-w-0">
-                <div className="truncate text-lg font-semibold text-slate-900">
+                <div className="truncate text-lg font-semibold text-[#0B1B46]">
                   {currentTrack.title}
                 </div>
                 <div className="truncate text-sm text-slate-500">
@@ -363,14 +409,14 @@ export default function Page() {
                 max={100}
                 value={progressPercent}
                 onChange={onSeek}
-                className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-slate-900"
+                className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-[#0B1B46]"
               />
 
               <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                <span>{playAllMode ? "Spil alle er aktiv" : "Ét nummer ad gangen"}</span>
+                <span>{playAllMode ? "Playlist aktiv" : "Ét nummer"}</span>
                 <button
                   onClick={() => setPlayAllMode((prev) => !prev)}
-                  className="rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-700"
+                  className="rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-700 transition hover:bg-slate-200"
                 >
                   {playAllMode ? "Slå playlist fra" : "Slå playlist til"}
                 </button>
@@ -382,4 +428,3 @@ export default function Page() {
     </main>
   );
 }
-
