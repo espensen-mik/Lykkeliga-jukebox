@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type Track = {
   id: string;
@@ -58,7 +58,6 @@ function formatTime(seconds: number) {
 
 export default function Page() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [radioMode, setRadioMode] = useState(false);
@@ -73,10 +72,9 @@ export default function Page() {
 
     audio.src = current.audioUrl;
     audio.load();
+    setTime(0);
 
-    if (playing) {
-      audio.play().catch(() => setPlaying(false));
-    }
+    if (playing) audio.play().catch(() => setPlaying(false));
   }, [index]);
 
   useEffect(() => {
@@ -88,7 +86,7 @@ export default function Page() {
 
     const ended = () => {
       if (radioMode) {
-        setIndex((prev) => (prev + 1) % tracks.length);
+        setIndex((i) => (i + 1) % tracks.length);
         setPlaying(true);
       } else {
         setPlaying(false);
@@ -119,104 +117,132 @@ export default function Page() {
     }
   };
 
-  const next = () => setIndex((i) => (i + 1) % tracks.length);
-  const prev = () => setIndex((i) => (i - 1 + tracks.length) % tracks.length);
-
-  const startRadio = () => {
-    setRadioMode(true);
+  const next = () => {
+    setIndex((i) => (i + 1) % tracks.length);
     setPlaying(true);
   };
 
-  const progress = duration ? (time / duration) * 100 : 0;
+  const prev = () => {
+    setIndex((i) => (i - 1 + tracks.length) % tracks.length);
+    setPlaying(true);
+  };
+
+  const toggleRadio = async () => {
+    setRadioMode((r) => !r);
+    if (!playing) {
+      await audioRef.current?.play();
+      setPlaying(true);
+    }
+  };
+
+  const progress = useMemo(() => {
+    if (!duration) return 0;
+    return (time / duration) * 100;
+  }, [time, duration]);
+
+  const seek = (e: any) => {
+    const audio = audioRef.current;
+    if (!audio || !duration) return;
+    const pct = e.target.value;
+    audio.currentTime = (pct / 100) * duration;
+  };
 
   return (
     <main className="min-h-screen bg-[#F6F3EB] pb-40">
       <audio ref={audioRef} />
 
-      <div className="mx-auto max-w-6xl px-6 pt-10">
-        {/* HEADER */}
-        <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-4">
-            <img src={logoUrl} className="h-10" />
-            <h1 className="text-2xl font-semibold text-[#0B1B46]">
-              LykkeLiga JukeBox
-            </h1>
-          </div>
+      {/* HEADER */}
+      <div className="pt-6 text-center">
+        <h1 className="text-4xl font-semibold tracking-tight text-[#0B1B46]">
+          LykkeLiga JukeBox
+        </h1>
 
-          <button
-            onClick={startRadio}
-            className="rounded-full bg-[#0B1B46] px-5 py-2 text-white"
-          >
-            LykkeLiga Radio
-          </button>
-        </div>
+        <button
+          onClick={toggleRadio}
+          className={`mt-4 rounded-full px-5 py-2 text-sm font-semibold ${
+            radioMode
+              ? "bg-[#7CFF6B] text-[#071126]"
+              : "bg-[#0B1B46] text-white"
+          }`}
+        >
+          {radioMode ? "Radio aktiv" : "LykkeLiga Radio"}
+        </button>
+      </div>
 
-        {/* SWIPE AREA */}
-        <div className="flex gap-6 overflow-x-auto pb-6 snap-x">
-          {tracks.map((t, i) => (
-            <div
-              key={t.id}
-              onClick={() => {
-                setIndex(i);
-                setPlaying(true);
-              }}
-              className="min-w-[260px] md:min-w-[340px] snap-center cursor-pointer"
-            >
+      {/* CAROUSEL */}
+      <div className="mt-10 flex justify-center overflow-hidden">
+        <div className="flex items-center gap-6 px-6">
+          {tracks.map((t, i) => {
+            const offset = i - index;
+
+            return (
               <div
-                className={`rounded-3xl overflow-hidden shadow ${
-                  i === index ? "scale-100" : "scale-90 opacity-70"
-                } transition`}
+                key={t.id}
+                onClick={() => {
+                  setIndex(i);
+                  setPlaying(true);
+                }}
+                className="cursor-pointer transition-all duration-500"
+                style={{
+                  transform: `
+                    translateX(${offset * 40}px)
+                    scale(${i === index ? 1 : 0.8})
+                  `,
+                  opacity: i === index ? 1 : 0.4,
+                }}
               >
                 <img
                   src={t.coverUrl}
-                  className="aspect-square object-cover w-full"
+                  className="h-[260px] w-[260px] rounded-3xl object-cover shadow-xl"
                 />
               </div>
-
-              <div className="mt-4 text-lg font-semibold">{t.title}</div>
-              <div className="text-sm text-slate-500">
-                Kunstner: {t.artist}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
+      {/* TITLE */}
+      <div className="mt-6 text-center">
+        <h2 className="text-2xl font-semibold text-[#0B1B46]">
+          {current.title}
+        </h2>
+        <p className="text-slate-500">Kunstner: {current.artist}</p>
+      </div>
+
       {/* PLAYER */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
-        <div className="max-w-6xl mx-auto flex items-center gap-4">
-          <img
-            src={current.coverUrl}
-            className="h-14 w-14 rounded-xl object-cover"
-          />
-
-          <div className="flex-1">
-            <div className="font-semibold">{current.title}</div>
-            <div className="text-sm text-slate-500">
-              {current.artist}
-            </div>
-
-            <div className="flex items-center gap-2 text-xs mt-1">
-              <span>{formatTime(time)}</span>
-              <div className="flex-1 h-1 bg-slate-200 rounded">
-                <div
-                  className="h-1 bg-[#0B1B46] rounded"
-                  style={{ width: `${progress}%` }}
-                />
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-white p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img
+              src={current.coverUrl}
+              className="h-12 w-12 rounded-xl object-cover"
+            />
+            <div>
+              <div className="text-sm font-semibold">{current.title}</div>
+              <div className="text-xs text-slate-500">
+                {current.artist}
               </div>
-              <span>{formatTime(duration)}</span>
             </div>
           </div>
 
-          <button onClick={prev}>⏮</button>
-          <button
-            onClick={toggle}
-            className="h-10 w-10 bg-[#0B1B46] text-white rounded-full"
-          >
-            {playing ? "⏸" : "▶"}
-          </button>
-          <button onClick={next}>⏭</button>
+          <div className="flex items-center gap-3">
+            <button onClick={prev}>⏮</button>
+            <button
+              onClick={toggle}
+              className="h-12 w-12 rounded-full bg-[#0B1B46] text-white"
+            >
+              {playing ? "⏸" : "▶"}
+            </button>
+            <button onClick={next}>⏭</button>
+          </div>
         </div>
+
+        <input
+          type="range"
+          value={progress}
+          onChange={seek}
+          className="mt-3 w-full accent-[#7CFF6B]"
+        />
       </div>
     </main>
   );
