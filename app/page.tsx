@@ -10,9 +10,6 @@ type Track = {
   coverUrl: string;
 };
 
-const logoUrl =
-  "https://lykkeliga.dk/wp-content/uploads/2025/12/lykkeliga_logo_blaa.svg";
-
 const tracks: Track[] = [
   {
     id: "hop-hop-hop",
@@ -56,7 +53,39 @@ function formatTime(seconds: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-function PlayerButton({
+function PrevIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+      <path d="M7 6h2v12H7zM18 7.5 10.5 12 18 16.5z" />
+    </svg>
+  );
+}
+
+function NextIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+      <path d="M15 6h2v12h-2zM6 7.5 13.5 12 6 16.5z" />
+    </svg>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+      <path d="M8 6.5v11l9-5.5z" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+      <path d="M7 6h4v12H7zm6 0h4v12h-4z" />
+    </svg>
+  );
+}
+
+function ControlButton({
   onClick,
   children,
   primary = false,
@@ -71,7 +100,7 @@ function PlayerButton({
       className={[
         "inline-flex items-center justify-center rounded-full transition active:scale-95",
         primary
-          ? "h-12 w-12 bg-[#7CFF6B] text-[#071126] shadow-[0_8px_20px_rgba(124,255,107,0.35)]"
+          ? "h-12 w-12 bg-[#7CFF6B] text-[#08132C] shadow-[0_8px_24px_rgba(124,255,107,0.35)]"
           : "h-10 w-10 bg-white/8 text-white ring-1 ring-white/10 hover:bg-white/12",
       ].join(" ")}
     >
@@ -109,9 +138,9 @@ export default function Page() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const update = () => setTime(audio.currentTime || 0);
-    const meta = () => setDuration(audio.duration || 0);
-    const ended = () => {
+    const onTime = () => setTime(audio.currentTime || 0);
+    const onMeta = () => setDuration(audio.duration || 0);
+    const onEnded = () => {
       if (radioMode) {
         setIndex((prev) => (prev + 1) % tracks.length);
         setPlaying(true);
@@ -120,21 +149,20 @@ export default function Page() {
       }
     };
 
-    audio.addEventListener("timeupdate", update);
-    audio.addEventListener("loadedmetadata", meta);
-    audio.addEventListener("ended", ended);
+    audio.addEventListener("timeupdate", onTime);
+    audio.addEventListener("loadedmetadata", onMeta);
+    audio.addEventListener("ended", onEnded);
 
     return () => {
-      audio.removeEventListener("timeupdate", update);
-      audio.removeEventListener("loadedmetadata", meta);
-      audio.removeEventListener("ended", ended);
+      audio.removeEventListener("timeupdate", onTime);
+      audio.removeEventListener("loadedmetadata", onMeta);
+      audio.removeEventListener("ended", onEnded);
     };
   }, [radioMode]);
 
   useEffect(() => {
     const strip = stripRef.current;
     if (!strip) return;
-
     const card = strip.querySelector<HTMLElement>(`[data-index="${index}"]`);
     if (!card) return;
 
@@ -159,17 +187,17 @@ export default function Page() {
     }
   };
 
-  const next = () => {
-    setIndex((prev) => (prev + 1) % tracks.length);
-    setPlaying(true);
-  };
-
   const prev = () => {
     setIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
     setPlaying(true);
   };
 
-  const selectTrack = async (i: number) => {
+  const next = () => {
+    setIndex((prev) => (prev + 1) % tracks.length);
+    setPlaying(true);
+  };
+
+  const selectTrack = (i: number) => {
     setIndex(i);
     setRadioMode(false);
     setPlaying(true);
@@ -177,8 +205,8 @@ export default function Page() {
 
   const toggleRadio = async () => {
     const audio = audioRef.current;
-    const nextValue = !radioMode;
-    setRadioMode(nextValue);
+    const nextMode = !radioMode;
+    setRadioMode(nextMode);
 
     if (!playing && audio) {
       try {
@@ -205,25 +233,23 @@ export default function Page() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F6F3EB] text-slate-900">
+    <main className="h-[100dvh] overflow-hidden bg-[#F6F3EB] text-slate-900">
       <audio ref={audioRef} preload="metadata" />
 
-      <div className="mx-auto max-w-6xl px-5 pb-44 pt-7 md:px-8 md:pt-10">
-        <header className="mb-8 text-center">
-          <div className="flex justify-center">
-            <h1 className="text-[36px] font-semibold leading-[0.95] tracking-[-0.04em] text-[#0B1B46] md:text-[56px]">
-              LykkeLiga JukeBox
-            </h1>
-          </div>
+      <div className="flex h-full flex-col">
+        <header className="shrink-0 px-5 pt-7 text-center">
+          <h1 className="text-[28px] font-semibold tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
+            LykkeLiga JukeBox
+          </h1>
 
-          <div className="mt-4 flex justify-center">
+          <div className="mt-4">
             <button
               onClick={toggleRadio}
               className={[
                 "rounded-full px-5 py-2.5 text-sm font-semibold tracking-[-0.01em] transition active:scale-[0.99]",
                 radioMode
                   ? "bg-[#0B1B46] text-white"
-                  : "bg-[#7CFF6B] text-[#071126] shadow-[0_10px_24px_rgba(124,255,107,0.25)]",
+                  : "bg-[#7CFF6B] text-[#071126] shadow-[0_10px_24px_rgba(124,255,107,0.28)]",
               ].join(" ")}
             >
               {radioMode ? "Stop LykkeLiga Radio" : "LykkeLiga Radio"}
@@ -231,10 +257,10 @@ export default function Page() {
           </div>
         </header>
 
-        <section>
+        <section className="flex min-h-0 flex-1 flex-col justify-center pt-4">
           <div
             ref={stripRef}
-            className="scrollbar-none -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 md:-mx-8 md:px-8"
+            className="scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto px-[11vw] pb-3"
           >
             {tracks.map((track, i) => {
               const active = i === index;
@@ -244,17 +270,17 @@ export default function Page() {
                   key={track.id}
                   data-index={i}
                   onClick={() => selectTrack(i)}
-                  className="w-[78vw] max-w-[320px] shrink-0 snap-center text-left"
+                  className="w-[68vw] max-w-[300px] shrink-0 snap-center text-left"
                 >
                   <div
                     className={[
-                      "overflow-hidden rounded-[28px] bg-white shadow-[0_10px_28px_rgba(11,27,70,0.08)] ring-1 ring-black/5 transition duration-300",
+                      "overflow-hidden rounded-[28px] bg-white shadow-[0_12px_34px_rgba(11,27,70,0.08)] ring-1 ring-black/5 transition duration-300",
                       active
                         ? "scale-100 opacity-100"
-                        : "scale-[0.96] opacity-80",
+                        : "scale-[0.93] opacity-60",
                     ].join(" ")}
                   >
-                    <div className="aspect-square overflow-hidden bg-slate-100">
+                    <div className="aspect-square overflow-hidden">
                       <img
                         src={track.coverUrl}
                         alt={track.title}
@@ -264,10 +290,10 @@ export default function Page() {
                   </div>
 
                   <div className="px-1 pb-1 pt-4">
-                    <div className="line-clamp-2 text-[20px] font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1B46] md:text-[24px]">
+                    <div className="line-clamp-2 text-[18px] font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1B46]">
                       {track.title}
                     </div>
-                    <div className="mt-1.5 text-[15px] leading-snug text-slate-500">
+                    <div className="mt-1.5 text-[14px] leading-snug text-slate-500">
                       Kunstner: {track.artist}
                     </div>
                   </div>
@@ -277,75 +303,39 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="mt-2 rounded-[28px] border border-slate-200/80 bg-white/80 p-5 shadow-sm backdrop-blur md:p-6">
-          <div className="grid gap-5 md:grid-cols-[0.9fr_1.1fr] md:items-center">
-            <div className="overflow-hidden rounded-[24px] shadow-sm ring-1 ring-black/5">
+        <div className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white">
+          <div className="mx-auto max-w-6xl px-4 py-3">
+            <div className="flex items-center gap-3">
               <img
                 src={current.coverUrl}
                 alt={current.title}
-                className="aspect-square w-full object-cover"
-              />
-            </div>
-
-            <div className="flex flex-col justify-between">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.24em] text-slate-500">
-                  Nu spiller
-                </div>
-                <h2 className="mt-3 text-[30px] font-semibold leading-[0.98] tracking-[-0.04em] text-[#0B1B46] md:text-[46px]">
-                  {current.title}
-                </h2>
-                <p className="mt-3 text-[16px] text-slate-500 md:text-[18px]">
-                  Kunstner: {current.artist}
-                </p>
-              </div>
-
-              <div className="mt-5 rounded-2xl bg-[#0B1B46] px-4 py-3 text-[13px] leading-relaxed text-white/90">
-                {radioMode
-                  ? "LykkeLiga Radio spiller numrene videre automatisk."
-                  : "Vælg et cover for at spille et nummer."}
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-[#08132C] text-white shadow-[0_-10px_30px_rgba(0,0,0,0.15)]">
-        <div className="mx-auto max-w-6xl px-4 py-4 md:px-6">
-          <div className="grid gap-4 md:grid-cols-[1.4fr_0.9fr_1.1fr] md:items-center">
-            <div className="flex min-w-0 items-center gap-3">
-              <img
-                src={current.coverUrl}
-                alt={current.title}
-                className="h-14 w-14 shrink-0 rounded-xl object-cover"
+                className="h-12 w-12 shrink-0 rounded-xl object-cover"
               />
 
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[17px] font-semibold leading-tight tracking-[-0.02em] text-white">
+                <div className="truncate text-[15px] font-semibold leading-tight tracking-[-0.02em] text-white">
                   {current.title}
                 </div>
-                <div className="mt-0.5 truncate text-[14px] text-white/65">
+                <div className="mt-0.5 truncate text-[13px] text-white/65">
                   {current.artist}
                 </div>
               </div>
 
-              <img
-                src={logoUrl}
-                alt="LykkeLiga logo"
-                className="hidden h-7 w-auto opacity-90 md:block"
-              />
+              <div className="flex items-center gap-2">
+                <ControlButton onClick={prev}>
+                  <PrevIcon />
+                </ControlButton>
+                <ControlButton onClick={togglePlay} primary>
+                  {playing ? <PauseIcon /> : <PlayIcon />}
+                </ControlButton>
+                <ControlButton onClick={next}>
+                  <NextIcon />
+                </ControlButton>
+              </div>
             </div>
 
-            <div className="flex items-center justify-center gap-3">
-              <PlayerButton onClick={prev}>⏮</PlayerButton>
-              <PlayerButton onClick={togglePlay} primary>
-                {playing ? "⏸" : "▶"}
-              </PlayerButton>
-              <PlayerButton onClick={next}>⏭</PlayerButton>
-            </div>
-
-            <div>
-              <div className="mb-2 flex items-center justify-between text-[12px] text-white/55">
+            <div className="mt-3">
+              <div className="mb-1.5 flex items-center justify-between text-[11px] text-white/55">
                 <span>{formatTime(time)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
@@ -356,10 +346,10 @@ export default function Page() {
                 max={100}
                 value={progress}
                 onChange={seek}
-                className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-[#7CFF6B]"
+                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-[#7CFF6B]"
               />
 
-              <div className="mt-3 flex items-center justify-between text-[12px] text-white/55">
+              <div className="mt-2 flex items-center justify-between text-[11px] text-white/55">
                 <span>{radioMode ? "Radio aktiv" : "Ét nummer"}</span>
                 <button
                   onClick={toggleRadio}
