@@ -306,10 +306,10 @@ export default function Page() {
   };
 
   return (
-    <main className="flex h-[100dvh] flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
-      <audio ref={audioRef} preload="metadata" />
+    <main className="relative flex min-h-[100dvh] min-h-[-webkit-fill-available] flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
+      <audio ref={audioRef} preload="metadata" className="hidden" />
 
-      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="safe-area-top pb-player-clear flex min-h-0 flex-1 flex-col overflow-hidden">
         <header className="shrink-0 px-5 pt-7 text-center">
           <h1 className="text-[28px] font-semibold tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
             LykkeLiga JukeBox
@@ -390,7 +390,7 @@ export default function Page() {
         </section>
       </div>
 
-      <div className="safe-area-bottom shrink-0 border-t border-slate-200 bg-[#08132C] text-white">
+      <div className="safe-area-bottom fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-[#08132C] text-white">
         <div className="mx-auto max-w-6xl px-4 py-3">
             <div className="flex items-center gap-3">
               <img
