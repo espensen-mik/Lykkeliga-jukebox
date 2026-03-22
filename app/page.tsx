@@ -80,6 +80,15 @@ const tracks: Track[] = [
       "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-vinder-LykkeCup-mp3-image.png",
   },
   {
+    id: "vi-spiller-klassebold",
+    title: "Vi spiller KlasseBold",
+    artist: "LykkeLiga",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-spiller-KlasseBold.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-spiller-KlasseBold-mp3-image.jpg",
+  },
+  {
     id: "venner-viser-taender",
     title: "Venner viser tænder",
     artist: "Skive FH",
@@ -254,7 +263,13 @@ export default function Page() {
 
   useEffect(() => {
     const setAppHeight = () => {
-      const h = window.innerHeight;
+      const vv = window.visualViewport;
+      const fromVv = vv ? vv.offsetTop + vv.height : 0;
+      const h = Math.max(
+        window.innerHeight,
+        document.documentElement.clientHeight,
+        fromVv
+      );
       document.documentElement.style.setProperty("--app-height", `${h}px`);
       document.documentElement.style.minHeight = `${h}px`;
       document.body.style.minHeight = `${h}px`;
@@ -262,9 +277,14 @@ export default function Page() {
     setAppHeight();
     window.addEventListener("resize", setAppHeight);
     window.addEventListener("orientationchange", setAppHeight);
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", setAppHeight);
+    vv?.addEventListener("scroll", setAppHeight);
     return () => {
       window.removeEventListener("resize", setAppHeight);
       window.removeEventListener("orientationchange", setAppHeight);
+      vv?.removeEventListener("resize", setAppHeight);
+      vv?.removeEventListener("scroll", setAppHeight);
     };
   }, []);
 
@@ -439,7 +459,7 @@ export default function Page() {
   };
 
   return (
-    <main className="fixed inset-0 z-0 flex min-h-0 flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
+    <main className="fixed inset-0 z-0 flex min-h-0 flex-col overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
       <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(12.5rem+env(safe-area-inset-bottom,0px))]">
@@ -493,7 +513,7 @@ export default function Page() {
         <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center pt-4">
           <div
             ref={stripRef}
-            className="scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto px-[11vw] pb-3"
+            className="juke-carousel-strip scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-[11vw] pb-3"
           >
             {tracks.map((track, i) => {
               const active = i === index;
@@ -517,7 +537,8 @@ export default function Page() {
                       <img
                         src={track.coverUrl}
                         alt={track.title}
-                        className="h-full w-full object-cover"
+                        draggable={false}
+                        className="juke-cover-img h-full w-full object-cover"
                       />
                     </div>
                   </div>
@@ -538,7 +559,7 @@ export default function Page() {
       </div>
 
       <div
-        className="juke-player-dock fixed bottom-0 left-0 right-0 z-[60] shrink-0 border-t border-slate-200 bg-[#08132C] text-white shadow-[0_1px_0_0_#08132C]"
+        className="juke-player-dock fixed bottom-0 left-0 right-0 z-[60] shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
         aria-label="Afspiller"
       >
         <div className="mx-auto max-w-6xl px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom,0px))]">
