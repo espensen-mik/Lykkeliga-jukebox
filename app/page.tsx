@@ -526,7 +526,7 @@ export default function Page() {
         </section>
 
         <div
-          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
+          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white [padding-bottom:env(safe-area-inset-bottom,0px)]"
           aria-label="Afspiller"
         >
           <div className="mx-auto max-w-6xl px-4 py-3">
