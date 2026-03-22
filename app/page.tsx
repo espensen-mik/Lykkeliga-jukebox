@@ -356,8 +356,8 @@ export default function Page() {
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
       <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden">
-        <header className="relative shrink-0 px-5 pt-7">
-          <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
+        <header className="relative z-[200] shrink-0 px-5 pt-7">
+          <div className="relative z-10 flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
               LykkeLiga JukeBox
             </h1>
@@ -374,7 +374,7 @@ export default function Page() {
               </button>
               {menuOpen && (
                 <div
-                  className="absolute right-0 top-[calc(100%+6px)] z-[100] min-w-[11rem] overflow-hidden rounded-2xl border border-black/8 bg-white py-1.5 text-left shadow-[0_12px_40px_rgba(11,27,70,0.12)] ring-1 ring-black/5"
+                  className="absolute right-0 top-[calc(100%+6px)] z-[500] min-w-[11rem] overflow-hidden rounded-2xl border border-black/8 bg-white py-1.5 text-left shadow-[0_12px_40px_rgba(11,27,70,0.12)] ring-1 ring-black/5"
                   role="menu"
                 >
                   <button
@@ -411,7 +411,7 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="mt-5 flex flex-col items-center gap-3 px-5">
+          <div className="relative z-0 mt-5 flex flex-col items-center gap-3 px-5">
             <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2">
               <div className="flex items-center gap-2">
                 <Radio
@@ -439,7 +439,7 @@ export default function Page() {
           </div>
         </header>
 
-        <section className="flex min-h-0 flex-1 flex-col justify-center pt-4">
+        <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center pt-4">
           <div
             ref={stripRef}
             className="scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto px-[11vw] pb-3"
@@ -487,10 +487,10 @@ export default function Page() {
       </div>
 
       <div
-        className="safe-area-bottom shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
+        className="relative z-30 shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
         aria-label="Afspiller"
       >
-        <div className="mx-auto max-w-6xl px-4 py-3">
+        <div className="mx-auto max-w-6xl px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom,0px))]">
             <div className="flex items-center gap-3">
               <img
                 src={current.coverUrl}
@@ -568,9 +568,15 @@ export default function Page() {
           </div>
         </div>
 
+      {/* Extra navy at physical bottom: covers iOS PWA / Chrome UI gap above home indicator */}
+      <div
+        className="juke-bottom-bleed pointer-events-none shrink-0 bg-[#08132C]"
+        aria-hidden
+      />
+
       {infoOpen && (
         <div
-          className="fixed inset-0 z-[200] flex items-end justify-center bg-black/45 p-4 sm:items-center"
+          className="fixed inset-0 z-[600] flex items-end justify-center bg-black/45 p-4 sm:items-center"
           role="presentation"
           onClick={() => setInfoOpen(false)}
         >
