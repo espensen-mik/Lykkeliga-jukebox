@@ -5,9 +5,7 @@
 html {
   height: 100%;
   height: -webkit-fill-available;
-  /* --app-height set in page.tsx from innerHeight / visualViewport (iOS PWA fixes dvh gap) */
   min-height: 100%;
-  min-height: var(--app-height, 100dvh);
   overflow: hidden;
   overscroll-behavior: none;
 }
@@ -20,8 +18,8 @@ body {
 
 body {
   height: 100%;
+  min-height: 100%;
   min-height: -webkit-fill-available;
-  min-height: var(--app-height, 100dvh);
   overflow: hidden;
   overscroll-behavior: none;
   font-family: Arial, Helvetica, sans-serif;
@@ -41,21 +39,6 @@ body {
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
   user-select: none;
-}
-
-/**
- * iOS PWA: extra navy strip below the dock covers occasional sub-pixel gap
- * (layout vs visual viewport on home-indicator devices).
- */
-.juke-player-dock::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 100%;
-  height: max(48px, env(safe-area-inset-bottom, 0px));
-  background: #08132c;
-  pointer-events: none;
 }
 
 /**

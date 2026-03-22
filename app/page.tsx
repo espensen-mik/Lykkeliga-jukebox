@@ -86,7 +86,7 @@ const tracks: Track[] = [
     audioUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-spiller-KlasseBold.mp3",
     coverUrl:
-      "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-spiller-KlasseBold-mp3-image.jpg",
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/klassebold_cover.png",
   },
   {
     id: "venner-viser-taender",
@@ -252,40 +252,8 @@ export default function Page() {
   }>({ top: 0, right: 16 });
   const [mounted, setMounted] = useState(false);
 
-  /**
-   * iOS standalone / Safari: match the shell to the *layout* viewport (innerHeight),
-   * not visualViewport alone — avoids a cream strip when the visual viewport is shorter
-   * than the full screen (browser chrome) or when offsets disagree in PWA.
-   */
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const setAppHeight = () => {
-      const vv = window.visualViewport;
-      const fromVv = vv ? vv.offsetTop + vv.height : 0;
-      const h = Math.max(
-        window.innerHeight,
-        document.documentElement.clientHeight,
-        fromVv
-      );
-      document.documentElement.style.setProperty("--app-height", `${h}px`);
-      document.documentElement.style.minHeight = `${h}px`;
-      document.body.style.minHeight = `${h}px`;
-    };
-    setAppHeight();
-    window.addEventListener("resize", setAppHeight);
-    window.addEventListener("orientationchange", setAppHeight);
-    const vv = window.visualViewport;
-    vv?.addEventListener("resize", setAppHeight);
-    vv?.addEventListener("scroll", setAppHeight);
-    return () => {
-      window.removeEventListener("resize", setAppHeight);
-      window.removeEventListener("orientationchange", setAppHeight);
-      vv?.removeEventListener("resize", setAppHeight);
-      vv?.removeEventListener("scroll", setAppHeight);
-    };
   }, []);
 
   useLayoutEffect(() => {
@@ -462,7 +430,7 @@ export default function Page() {
     <main className="fixed inset-0 z-0 flex min-h-0 flex-col overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
-      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(12.5rem+env(safe-area-inset-bottom,0px))]">
+      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden pb-[12.5rem]">
         <header className="relative z-[200] shrink-0 px-5 pt-7">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
