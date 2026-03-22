@@ -431,8 +431,7 @@ export default function Page() {
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
       <div className="flex h-full min-h-0 flex-col">
-      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden">
-        <header className="relative z-[200] shrink-0 px-5 pt-7">
+        <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
               LykkeLiga JukeBox
@@ -479,7 +478,7 @@ export default function Page() {
           </div>
         </header>
 
-        <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center pt-4">
+        <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center overflow-hidden pt-4">
           <div
             ref={stripRef}
             className="juke-carousel-strip scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-[11vw] pb-3"
@@ -525,13 +524,12 @@ export default function Page() {
             })}
           </div>
         </section>
-      </div>
 
-      <div
-        className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
-        aria-label="Afspiller"
-      >
-        <div className="mx-auto max-w-6xl px-4 py-3">
+        <div
+          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
+          aria-label="Afspiller"
+        >
+          <div className="mx-auto max-w-6xl px-4 py-3">
             <div className="flex items-center gap-3">
               <img
                 src={current.coverUrl}
