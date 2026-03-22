@@ -5,6 +5,8 @@
 html {
   height: 100%;
   height: -webkit-fill-available;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 html,
@@ -14,18 +16,12 @@ body {
 }
 
 body {
-  min-height: 100%;
-  min-height: 100dvh;
+  height: 100%;
   min-height: -webkit-fill-available;
+  overflow: hidden;
+  overscroll-behavior: none;
   font-family: Arial, Helvetica, sans-serif;
   background-color: #f5f0e6;
-}
-
-/**
- * Reserve space above the fixed bottom player (content height + home indicator).
- */
-.pb-player-clear {
-  padding-bottom: calc(10.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /**
