@@ -13,7 +13,6 @@ const THEME_COLOR = "#F5F0E6";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  viewportFit: "cover",
   themeColor: THEME_COLOR,
 };
 
