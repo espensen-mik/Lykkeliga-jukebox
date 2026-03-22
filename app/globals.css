@@ -6,8 +6,12 @@ html {
   height: 100%;
   height: -webkit-fill-available;
   min-height: 100%;
+  /* iOS standalone: match visible viewport; avoids gap below fixed layers */
+  min-height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
+  /* Fallback under gradients so any sub-viewport gap is not pure white */
+  background-color: #f5f0e6;
 }
 
 html,
@@ -20,10 +24,12 @@ body {
   height: 100%;
   min-height: 100%;
   min-height: -webkit-fill-available;
+  min-height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
   font-family: Arial, Helvetica, sans-serif;
   background: linear-gradient(180deg, #faf8f3 0%, #f5f0e6 42%, #ebe3d6 100%);
+  background-color: #f5f0e6;
 }
 
 /**
@@ -57,6 +63,17 @@ body {
     padding-bottom: constant(safe-area-inset-bottom);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+}
+
+/**
+ * Bottom player: safe-area as padding on the same box as background so #08132C
+ * fills to the physical bottom in iOS standalone (viewport-fit=cover).
+ */
+.juke-player-dock {
+  box-sizing: border-box;
+  padding-bottom: 0;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .juke-progress {

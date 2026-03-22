@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="da" className="h-full">
-      <body className="flex h-full min-h-0 flex-col overflow-hidden overscroll-none">
+      <body className="flex h-full min-h-0 min-h-[100dvh] flex-col overflow-hidden overscroll-none">
         {children}
       </body>
     </html>
