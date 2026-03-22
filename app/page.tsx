@@ -97,6 +97,15 @@ const tracks: Track[] = [
     coverUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/VENNER-VISER-TAeNDER.png",
   },
+  {
+    id: "vi-er-lykkeliga",
+    title: "Vi er LykkeLiga",
+    artist: "Gritt Møller",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Gritt-Moeller-Lykkeliga.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/vierlykkeliga.png",
+  },
 ];
 
 function formatTime(seconds: number) {
