@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Radio } from "lucide-react";
+import { Menu, Radio, X } from "lucide-react";
 
 type Track = {
   id: string;
@@ -190,6 +190,10 @@ export default function Page() {
   const [radioMode, setRadioMode] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const current = tracks[index];
   const nextInRadio = tracks[(index + 1) % tracks.length];
@@ -242,6 +246,49 @@ export default function Page() {
     const left = card.offsetLeft - (strip.clientWidth - card.clientWidth) / 2;
     strip.scrollTo({ left, behavior: "smooth" });
   }, [index]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!infoOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setInfoOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [infoOpen]);
+
+  const shareApp = async () => {
+    const url =
+      typeof window !== "undefined" ? window.location.href : "";
+    if (!url) return;
+    setMenuOpen(false);
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "LykkeLiga Jukebox",
+          text: "LykkeLiga Jukebox",
+          url,
+        });
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        window.alert("Linket er kopieret — du kan indsætte det, hvor du vil.");
+      } else {
+        window.prompt("Kopiér linket:", url);
+      }
+    } catch {
+      /* user cancelled share or error */
+    }
+  };
 
   const togglePlay = async () => {
     const audio = audioRef.current;
@@ -305,14 +352,64 @@ export default function Page() {
   };
 
   return (
-    <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
+    <main className="fixed inset-0 z-0 flex min-h-0 flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
       <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden">
-        <header className="shrink-0 px-5 pt-7 text-center">
-          <h1 className="text-[28px] font-semibold tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
-            LykkeLiga JukeBox
-          </h1>
+        <header className="relative shrink-0 px-5 pt-7">
+          <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
+            <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
+              LykkeLiga JukeBox
+            </h1>
+            <div ref={menuRef} className="absolute right-0 top-1/2 -translate-y-1/2">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((o) => !o)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-[#0B1B46] transition hover:bg-[#0B1B46]/5 active:bg-[#0B1B46]/10"
+                aria-expanded={menuOpen}
+                aria-haspopup="true"
+                aria-label="Menu"
+              >
+                <Menu className="h-6 w-6" strokeWidth={2} />
+              </button>
+              {menuOpen && (
+                <div
+                  className="absolute right-0 top-[calc(100%+6px)] z-[100] min-w-[11rem] overflow-hidden rounded-2xl border border-black/8 bg-white py-1.5 text-left shadow-[0_12px_40px_rgba(11,27,70,0.12)] ring-1 ring-black/5"
+                  role="menu"
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setInfoOpen(true);
+                    }}
+                  >
+                    Info
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                    onClick={shareApp}
+                  >
+                    Del
+                  </button>
+                  <a
+                    role="menuitem"
+                    href="https://lykkeliga.dk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-4 py-2.5 text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    lykkeliga.dk
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="mt-5 flex flex-col items-center gap-3 px-5">
             <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2">
@@ -470,6 +567,51 @@ export default function Page() {
             </div>
           </div>
         </div>
+
+      {infoOpen && (
+        <div
+          className="fixed inset-0 z-[200] flex items-end justify-center bg-black/45 p-4 sm:items-center"
+          role="presentation"
+          onClick={() => setInfoOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="info-dialog-title"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] bg-white px-5 py-5 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2
+                id="info-dialog-title"
+                className="text-lg font-semibold text-[#0B1B46]"
+              >
+                Om LykkeLiga Jukebox
+              </h2>
+              <button
+                type="button"
+                onClick={() => setInfoOpen(false)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#0B1B46]/60 transition hover:bg-black/5 hover:text-[#0B1B46]"
+                aria-label="Luk"
+              >
+                <X className="h-5 w-5" strokeWidth={2} />
+              </button>
+            </div>
+            <p className="mt-3 text-[15px] leading-relaxed text-slate-600">
+              LykkeLiga Jukebox er en lille musikafspiller med sange fra
+              LykkeLiga. Vælg et nummer i karussellen, eller tænd for
+              LykkeRadioen, så spiller den videre automatisk. God fornøjelse!
+            </p>
+            <button
+              type="button"
+              onClick={() => setInfoOpen(false)}
+              className="mt-5 w-full rounded-2xl bg-[#0B1B46] py-3 text-[15px] font-semibold text-white transition active:scale-[0.99]"
+            >
+              Luk
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
