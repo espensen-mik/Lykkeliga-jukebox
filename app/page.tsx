@@ -427,11 +427,11 @@ export default function Page() {
   };
 
   return (
-    <>
-      <main className="fixed inset-0 z-0 flex min-h-0 flex-col overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900">
+    <main className="h-[100dvh] overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
-      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden pb-[12.5rem]">
+      <div className="flex h-full min-h-0 flex-col">
+      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden">
         <header className="relative z-[200] shrink-0 px-5 pt-7">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
@@ -526,13 +526,12 @@ export default function Page() {
           </div>
         </section>
       </div>
-      </main>
 
       <div
-        className="juke-player-dock fixed bottom-0 left-0 right-0 z-[60] border-t border-slate-200 bg-[#08132C] text-white"
+        className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
         aria-label="Afspiller"
       >
-        <div className="mx-auto max-w-6xl px-4 pt-3 pb-3">
+        <div className="mx-auto max-w-6xl px-4 py-3">
             <div className="flex items-center gap-3">
               <img
                 src={current.coverUrl}
@@ -609,6 +608,7 @@ export default function Page() {
             </div>
           </div>
         </div>
+      </div>
 
       {mounted &&
         menuOpen &&
@@ -706,6 +706,6 @@ export default function Page() {
           </div>
         </div>
       )}
-    </>
+    </main>
   );
 }
