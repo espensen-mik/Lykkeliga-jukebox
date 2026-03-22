@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Radio } from "lucide-react";
 
 type Track = {
   id: string;
@@ -85,6 +86,77 @@ function PauseIcon() {
   );
 }
 
+function RadioToggle({
+  checked,
+  onChange,
+  id,
+  "aria-label": ariaLabel,
+}: {
+  checked: boolean;
+  onChange: () => void;
+  id?: string;
+  "aria-label"?: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      id={id}
+      aria-label={ariaLabel ?? "LykkeRadio"}
+      onClick={onChange}
+      className={[
+        "relative h-9 w-14 shrink-0 rounded-full transition-colors duration-200",
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B1B46]",
+        checked
+          ? "bg-[#7CFF6B] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_14px_rgba(124,255,107,0.35)]"
+          : "bg-slate-300/90",
+      ].join(" ")}
+    >
+      <span
+        className={[
+          "absolute left-1 top-1 h-7 w-7 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.18)] ring-1 ring-black/5 transition-transform duration-200 ease-out",
+          checked ? "translate-x-5" : "translate-x-0",
+        ].join(" ")}
+      />
+    </button>
+  );
+}
+
+function ProgressBar({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  return (
+    <div className="relative flex h-7 w-full items-center">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-white/10"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-l-full bg-[#7CFF6B] transition-[width] duration-150 ease-linear"
+        style={{
+          width: `${value}%`,
+          borderRadius: value >= 99.5 ? "9999px" : undefined,
+        }}
+        aria-hidden
+      />
+      <input
+        type="range"
+        min={0}
+        max={100}
+        step={0.1}
+        value={value}
+        onChange={onChange}
+        className="juke-progress relative z-10 w-full cursor-pointer"
+      />
+    </div>
+  );
+}
+
 function ControlButton({
   onClick,
   children,
@@ -120,6 +192,7 @@ export default function Page() {
   const [duration, setDuration] = useState(0);
 
   const current = tracks[index];
+  const nextInRadio = tracks[(index + 1) % tracks.length];
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -233,7 +306,7 @@ export default function Page() {
   };
 
   return (
-    <main className="h-[100dvh] overflow-hidden bg-[#F6F3EB] text-slate-900">
+    <main className="h-[100dvh] overflow-hidden bg-[#F5F0E6] text-slate-900">
       <audio ref={audioRef} preload="metadata" />
 
       <div className="flex h-full flex-col">
@@ -242,18 +315,31 @@ export default function Page() {
             LykkeLiga JukeBox
           </h1>
 
-          <div className="mt-4">
-            <button
-              onClick={toggleRadio}
-              className={[
-                "rounded-full px-5 py-2.5 text-sm font-semibold tracking-[-0.01em] transition active:scale-[0.99]",
-                radioMode
-                  ? "bg-[#0B1B46] text-white"
-                  : "bg-[#7CFF6B] text-[#071126] shadow-[0_10px_24px_rgba(124,255,107,0.28)]",
-              ].join(" ")}
-            >
-              {radioMode ? "Stop LykkeLiga Radio" : "LykkeLiga Radio"}
-            </button>
+          <div className="mt-5 flex flex-col items-center gap-3 px-5">
+            <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2">
+              <div className="flex items-center gap-2">
+                <Radio
+                  className="h-6 w-6 shrink-0 text-[#0B1B46]"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="text-[17px] font-semibold tracking-[-0.03em] text-[#0B1B46]">
+                  LykkeLiga Radio
+                </span>
+              </div>
+              <RadioToggle
+                checked={radioMode}
+                onChange={toggleRadio}
+                id="lykke-radio-toggle"
+                aria-label={
+                  radioMode ? "Sluk LykkeRadio" : "Tænd LykkeRadio"
+                }
+              />
+            </div>
+            <p className="max-w-[min(100%,22rem)] text-center text-[13px] leading-snug text-[#0B1B46]/70">
+              Tænd for LykkeRadioen - så spiller den lykkelige musik i
+              uendelighed
+            </p>
           </div>
         </header>
 
@@ -340,28 +426,43 @@ export default function Page() {
                 <span>{formatTime(duration)}</span>
               </div>
 
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={progress}
-                onChange={seek}
-                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-[#7CFF6B]"
-              />
+              <ProgressBar value={progress} onChange={seek} />
 
-              <div className="mt-2 flex items-center justify-between text-[11px] text-white/55">
-                <span>{radioMode ? "Radio aktiv" : "Ét nummer"}</span>
-                <button
-                  onClick={toggleRadio}
-                  className={[
-                    "rounded-full px-3 py-1.5 font-medium transition",
-                    radioMode
-                      ? "bg-[#7CFF6B] text-[#071126]"
-                      : "bg-white/8 text-white hover:bg-white/12",
-                  ].join(" ")}
+              <div className="mt-2 flex items-center gap-2 text-[11px] leading-none text-white/55">
+                <span className="shrink-0">
+                  {radioMode ? "Radio aktiv" : "Ét nummer"}
+                </span>
+                {radioMode ? (
+                  <p
+                    className="min-w-0 flex-1 truncate text-right text-white/80"
+                    aria-live="polite"
+                  >
+                    <span className="text-white/40">Næste · </span>
+                    <span className="font-medium text-white">
+                      {nextInRadio.title}
+                    </span>
+                    <span className="text-white/40"> · </span>
+                    <span className="text-white/55">{nextInRadio.artist}</span>
+                  </p>
+                ) : (
+                  <span className="min-w-0 flex-1" aria-hidden />
+                )}
+                <span
+                  className="inline-flex shrink-0 items-center justify-center"
+                  title={radioMode ? "Radio til" : "Radio fra"}
+                  aria-hidden
                 >
-                  {radioMode ? "Stop radio" : "Radio"}
-                </button>
+                  <Radio
+                    className={[
+                      "h-5 w-5 transition-colors duration-200",
+                      radioMode
+                        ? "text-[#7CFF6B] drop-shadow-[0_0_10px_rgba(124,255,107,0.45)]"
+                        : "text-white/25",
+                    ].join(" ")}
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                </span>
               </div>
             </div>
           </div>
