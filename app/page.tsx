@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 import { Menu, Radio, X } from "lucide-react";
 
 type Track = {
@@ -15,7 +22,7 @@ const tracks: Track[] = [
   {
     id: "hop-hop-hop",
     title: "Hop hop hop",
-    artist: "LykkeLiga",
+    artist: "TMS Ringsted",
     audioUrl: "https://lykkeliga.dk/wp-content/uploads/2026/03/Hop-hop-hop.mp3",
     coverUrl: "https://lykkeliga.dk/wp-content/uploads/2026/03/Hophophop.jpg",
   },
@@ -31,7 +38,7 @@ const tracks: Track[] = [
   {
     id: "sammen-med-lars",
     title: "Sammen med Lars er vi superstars",
-    artist: "LykkeLiga",
+    artist: "Ravnsborg Vikings",
     audioUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/Sammen-med-Lars-er-vi-superstars.mp3",
     coverUrl:
@@ -40,10 +47,46 @@ const tracks: Track[] = [
   {
     id: "scoresangen",
     title: "Scoresangen",
-    artist: "LykkeLiga",
+    artist: "Ravnsborg Vikings",
     audioUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/Scoresangen.mp3",
     coverUrl: "https://lykkeliga.dk/wp-content/uploads/2026/03/Scoresangen.jpg",
+  },
+  {
+    id: "se-mine-muller",
+    title: "Se mine muller",
+    artist: "Skive FH",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Se-mine-muller.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Se-mine-muller-mp3-image.jpg",
+  },
+  {
+    id: "vi-er-sammenholdet",
+    title: "Vi er Sammenholdet",
+    artist: "Guldgåsen",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-er-Sammenholdet.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-er-Sammenholdet-mp3-image.png",
+  },
+  {
+    id: "vi-vinder-lykkecup",
+    title: "Vi vinder LykkeCup",
+    artist: "Guldgåsen",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-vinder-LykkeCup.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Vi-vinder-LykkeCup-mp3-image.png",
+  },
+  {
+    id: "venner-viser-taender",
+    title: "Venner viser tænder",
+    artist: "Skive FH",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Venner-viser-taender.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/VENNER-VISER-TAeNDER.png",
   },
 ];
 
@@ -194,6 +237,61 @@ export default function Page() {
   const [infoOpen, setInfoOpen] = useState(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const [menuDropdownPos, setMenuDropdownPos] = useState<{
+    top: number;
+    right: number;
+  }>({ top: 0, right: 16 });
+  const [mounted, setMounted] = useState(false);
+
+  /**
+   * iOS standalone / Safari: match the shell to the *layout* viewport (innerHeight),
+   * not visualViewport alone — avoids a cream strip when the visual viewport is shorter
+   * than the full screen (browser chrome) or when offsets disagree in PWA.
+   */
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const setAppHeight = () => {
+      const h = window.innerHeight;
+      document.documentElement.style.setProperty("--app-height", `${h}px`);
+      document.documentElement.style.minHeight = `${h}px`;
+      document.body.style.minHeight = `${h}px`;
+    };
+    setAppHeight();
+    window.addEventListener("resize", setAppHeight);
+    window.addEventListener("orientationchange", setAppHeight);
+    return () => {
+      window.removeEventListener("resize", setAppHeight);
+      window.removeEventListener("orientationchange", setAppHeight);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!menuOpen) return;
+    const measure = () => {
+      const el = menuRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      setMenuDropdownPos({
+        top: r.bottom + 6,
+        right: Math.max(8, window.innerWidth - r.right),
+      });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("orientationchange", measure);
+    const vv = window.visualViewport;
+    vv?.addEventListener("resize", measure);
+    vv?.addEventListener("scroll", measure);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("orientationchange", measure);
+      vv?.removeEventListener("resize", measure);
+      vv?.removeEventListener("scroll", measure);
+    };
+  }, [menuOpen]);
 
   const current = tracks[index];
   const nextInRadio = tracks[(index + 1) % tracks.length];
@@ -246,17 +344,6 @@ export default function Page() {
     const left = card.offsetLeft - (strip.clientWidth - card.clientWidth) / 2;
     strip.scrollTo({ left, behavior: "smooth" });
   }, [index]);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onDown = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, [menuOpen]);
 
   useEffect(() => {
     if (!infoOpen) return;
@@ -352,12 +439,12 @@ export default function Page() {
   };
 
   return (
-    <main className="fixed left-0 right-0 top-0 z-0 flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
+    <main className="fixed inset-0 z-0 flex min-h-0 flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
       <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(12.5rem+env(safe-area-inset-bottom,0px))]">
         <header className="relative z-[200] shrink-0 px-5 pt-7">
-          <div className="relative z-10 flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
+          <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
               LykkeLiga JukeBox
             </h1>
@@ -365,49 +452,13 @@ export default function Page() {
               <button
                 type="button"
                 onClick={() => setMenuOpen((o) => !o)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-[#0B1B46] transition hover:bg-[#0B1B46]/5 active:bg-[#0B1B46]/10"
+                className="relative z-[80] inline-flex h-10 w-10 items-center justify-center rounded-xl text-[#0B1B46] transition hover:bg-[#0B1B46]/5 active:bg-[#0B1B46]/10"
                 aria-expanded={menuOpen}
                 aria-haspopup="true"
                 aria-label="Menu"
               >
                 <Menu className="h-6 w-6" strokeWidth={2} />
               </button>
-              {menuOpen && (
-                <div
-                  className="absolute right-0 top-[calc(100%+6px)] z-[500] min-w-[11rem] overflow-hidden rounded-2xl border border-black/8 bg-white py-1.5 text-left shadow-[0_12px_40px_rgba(11,27,70,0.12)] ring-1 ring-black/5"
-                  role="menu"
-                >
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      setInfoOpen(true);
-                    }}
-                  >
-                    Info
-                  </button>
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
-                    onClick={shareApp}
-                  >
-                    Del
-                  </button>
-                  <a
-                    role="menuitem"
-                    href="https://lykkeliga.dk"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-2.5 text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    lykkeliga.dk
-                  </a>
-                </div>
-              )}
             </div>
           </div>
 
@@ -487,7 +538,7 @@ export default function Page() {
       </div>
 
       <div
-        className="fixed bottom-0 left-0 right-0 z-30 shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
+        className="juke-player-dock fixed bottom-0 left-0 right-0 z-[60] shrink-0 border-t border-slate-200 bg-[#08132C] text-white shadow-[0_1px_0_0_#08132C]"
         aria-label="Afspiller"
       >
         <div className="mx-auto max-w-6xl px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom,0px))]">
@@ -567,6 +618,58 @@ export default function Page() {
             </div>
           </div>
         </div>
+
+      {mounted &&
+        menuOpen &&
+        createPortal(
+          <>
+            <button
+              type="button"
+              aria-label="Luk menu"
+              className="fixed inset-0 z-[10000] cursor-default border-0 bg-black/35 p-0"
+              onClick={() => setMenuOpen(false)}
+            />
+            <div
+              className="fixed z-[10001] min-w-[11rem] overflow-hidden rounded-2xl border border-black/8 bg-white py-1.5 text-left shadow-[0_12px_40px_rgba(11,27,70,0.12)] ring-1 ring-black/5"
+              role="menu"
+              style={{
+                top: menuDropdownPos.top,
+                right: menuDropdownPos.right,
+              }}
+            >
+              <button
+                type="button"
+                role="menuitem"
+                className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setInfoOpen(true);
+                }}
+              >
+                Info
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                onClick={shareApp}
+              >
+                Del
+              </button>
+              <a
+                role="menuitem"
+                href="https://lykkeliga.dk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-4 py-2.5 text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                onClick={() => setMenuOpen(false)}
+              >
+                lykkeliga.dk
+              </a>
+            </div>
+          </>,
+          document.body
+        )}
 
       {infoOpen && (
         <div
