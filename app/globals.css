@@ -13,6 +13,18 @@ body {
   background-color: #f5f0e6;
 }
 
+/**
+ * iOS notch / Dynamic Island / status bar (standalone + Safari).
+ * Fallback 0px when env() is missing; constant() for older iOS WebKit.
+ */
+@layer utilities {
+  .safe-area-top {
+    padding-top: 0;
+    padding-top: constant(safe-area-inset-top);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
 .juke-progress {
   -webkit-appearance: none;
   appearance: none;

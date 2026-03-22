@@ -306,7 +306,7 @@ export default function Page() {
   };
 
   return (
-    <main className="h-[100dvh] overflow-hidden bg-[#F5F0E6] text-slate-900">
+    <main className="safe-area-top box-border h-[100dvh] overflow-hidden bg-[#F5F0E6] text-slate-900">
       <audio ref={audioRef} preload="metadata" />
 
       <div className="flex h-full flex-col">
