@@ -4,6 +4,9 @@ import React from "react";
 
 const APP_TITLE = "LykkeLiga Jukebox";
 
+/** Bump when replacing public/icon.png so favicon / Add to Home Screen pick up the new asset */
+const ICON_VERSION = "2";
+
 /** Warm cream — matches page background and iOS theme / splash tint */
 const THEME_COLOR = "#F5F0E6";
 
@@ -24,7 +27,8 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   icons: {
-    apple: "/icon.png",
+    icon: `/icon.png?v=${ICON_VERSION}`,
+    apple: `/icon.png?v=${ICON_VERSION}`,
   },
 };
 

@@ -352,10 +352,10 @@ export default function Page() {
   };
 
   return (
-    <main className="fixed inset-0 z-0 flex min-h-0 flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
+    <main className="fixed left-0 right-0 top-0 z-0 flex h-[100dvh] min-h-0 max-h-[100dvh] flex-col overflow-hidden bg-[#F5F0E6] text-slate-900">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
-      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="safe-area-top flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(12.5rem+env(safe-area-inset-bottom,0px))]">
         <header className="relative z-[200] shrink-0 px-5 pt-7">
           <div className="relative z-10 flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
@@ -487,7 +487,7 @@ export default function Page() {
       </div>
 
       <div
-        className="relative z-30 shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
+        className="fixed bottom-0 left-0 right-0 z-30 shrink-0 border-t border-slate-200 bg-[#08132C] text-white"
         aria-label="Afspiller"
       >
         <div className="mx-auto max-w-6xl px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom,0px))]">
@@ -567,12 +567,6 @@ export default function Page() {
             </div>
           </div>
         </div>
-
-      {/* Extra navy at physical bottom: covers iOS PWA / Chrome UI gap above home indicator */}
-      <div
-        className="juke-bottom-bleed pointer-events-none shrink-0 bg-[#08132C]"
-        aria-hidden
-      />
 
       {infoOpen && (
         <div
