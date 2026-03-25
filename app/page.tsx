@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { FileText, Menu, Radio, X } from "lucide-react";
+import { MicVocal, Menu, Radio, X } from "lucide-react";
 
 type Track = {
   id: string;
@@ -124,7 +124,7 @@ const lyricsByTrackId: Record<string, string> = {
   "vi-vinder-lykkecup":
     "Her kommer sangteksten for “Vi vinder LykkeCup”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
   "vi-spiller-klassebold":
-    "Her kommer sangteksten for “Vi spiller KlasseBold”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Vi spiller Klassebold\nSangtekst\n\nOp ad stolen\nBold I skolen\nVi vil meget hellere spille, \nend at sidde og pille\nBussemænd\nVi scorer igen og igen\n\nNår vi spiller er det klasse bold\nVores klasse den er blevet et hold\nVi står sammen og vi scorer mål\nVores muskler de er lavet af stål\n\nUd på banen\nSpis bananen\nVi vil meget hellere spille, \nend at sidde stille\nKom min ven\nVi scorer igen og igen\n\nVi spiller klasse bold\nVi gider ikke sidde stille\nklasse bold\nHåndbold gør os vilde",
   "venner-viser-taender":
     "Her kommer sangteksten for “Venner viser tænder”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
   "vi-er-lykkeliga":
@@ -563,7 +563,7 @@ export default function Page() {
                         tabIndex={0}
                         aria-label={`Se lyrics for ${track.title}`}
                         title="Lyrics"
-                        className="absolute right-3 top-3 z-[50] inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white/90 backdrop-blur-md transition hover:bg-black/40"
+                        className="absolute right-3 top-3 z-[50] inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#7CFF6B] text-[#08132C] shadow-[0_0_18px_rgba(124,255,107,0.35)] transition hover:brightness-[1.03] active:brightness-[0.98]"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -578,7 +578,7 @@ export default function Page() {
                           setLyricsOpen(true);
                         }}
                       >
-                        <FileText className="h-5 w-5" strokeWidth={2} />
+                        <MicVocal className="h-5 w-5" strokeWidth={2} />
                       </span>
                     </div>
                   </div>
@@ -786,14 +786,14 @@ export default function Page() {
 
       {lyricsOpen && (
         <div
-          className="fixed inset-0 z-[650] flex items-end justify-center bg-[#08132C]/35 p-4 backdrop-blur-xl sm:items-center"
+          className="fixed inset-0 z-[650] flex items-center justify-center bg-[#08132C]/30 p-4 backdrop-blur-md"
           role="presentation"
           onClick={() => setLyricsOpen(false)}
         >
           <div
             role="dialog"
             aria-modal="true"
-            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-md"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
