@@ -284,6 +284,7 @@ function ControlButton({
 export default function Page() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stripRef = useRef<HTMLDivElement | null>(null);
+  const suppressCoverClickRef = useRef<number>(0);
 
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -304,6 +305,40 @@ export default function Page() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Best-effort orientation lock for iOS web-app mode.
+    // Note: browsers typically require a user gesture; we try on mount and on first tap.
+    const tryLockPortrait = async () => {
+      try {
+        const so: any = (window as any).screen?.orientation;
+        if (!so?.lock) return;
+        if (so.type && String(so.type).includes("portrait")) return;
+        await so.lock("portrait");
+      } catch {
+        /* ignore */
+      }
+    };
+
+    void tryLockPortrait();
+
+    const onFirstTouch = () => {
+      void tryLockPortrait();
+      window.removeEventListener("touchstart", onFirstTouch);
+    };
+
+    window.addEventListener("touchstart", onFirstTouch, { once: true });
+
+    const onOrientationChange = () => {
+      void tryLockPortrait();
+    };
+    window.addEventListener("orientationchange", onOrientationChange);
+
+    return () => {
+      window.removeEventListener("orientationchange", onOrientationChange);
+      window.removeEventListener("touchstart", onFirstTouch);
+    };
   }, []);
 
   useLayoutEffect(() => {
@@ -615,9 +650,18 @@ export default function Page() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={togglePlay}
+                onClick={() => {
+                  if (Date.now() - suppressCoverClickRef.current < 600) return;
+                  togglePlay();
+                }}
                 aria-label={playing ? "Pause" : "Afspil"}
                 className="h-12 w-12 shrink-0 overflow-hidden rounded-xl transition active:scale-95"
+                onPointerDown={(e) => {
+                  if (e.pointerType !== "touch") return;
+                  suppressCoverClickRef.current = Date.now();
+                  e.stopPropagation();
+                  togglePlay();
+                }}
               >
                 <img
                   src={current.coverUrl}
