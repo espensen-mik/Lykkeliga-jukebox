@@ -6,6 +6,12 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* lock vertical panning on iOS */
+  touch-action: pan-x; /* allow only horizontal gesture panning */
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -46,6 +52,8 @@ body {
   height: 28px;
   width: 100%;
   margin: 0;
+  touch-action: pan-x; /* prevent vertical scroll while dragging the slider */
+  overscroll-behavior-y: none;
 }
 
 .juke-progress:focus {

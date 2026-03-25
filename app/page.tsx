@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { Menu, Radio, X } from "lucide-react";
+import { FileText, Menu, Radio, X } from "lucide-react";
 
 type Track = {
   id: string;
@@ -107,6 +107,36 @@ const tracks: Track[] = [
       "https://lykkeliga.dk/wp-content/uploads/2026/03/vierlykkeliga.png",
   },
 ];
+
+const lyricsByTrackId: Record<string, string> = {
+  "hop-hop-hop":
+    "Her kommer sangteksten for “Hop hop hop”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "nede-med-at-svede":
+    "Her kommer sangteksten for “Nede med at svede”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "sammen-med-lars":
+    "Her kommer sangteksten for “Sammen med Lars er vi superstars”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  scoresangen:
+    "Her kommer sangteksten for “Scoresangen”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "se-mine-muller":
+    "Her kommer sangteksten for “Se mine muller”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "vi-er-sammenholdet":
+    "Her kommer sangteksten for “Vi er Sammenholdet”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "vi-vinder-lykkecup":
+    "Her kommer sangteksten for “Vi vinder LykkeCup”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "vi-spiller-klassebold":
+    "Her kommer sangteksten for “Vi spiller KlasseBold”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "venner-viser-taender":
+    "Her kommer sangteksten for “Venner viser tænder”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "vi-er-lykkeliga":
+    "Her kommer sangteksten for “Vi er LykkeLiga”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+};
+
+function getLyrics(trackId: string) {
+  return (
+    lyricsByTrackId[trackId] ??
+    "Ingen lyrics er indlæst endnu for denne sang."
+  );
+}
 
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds)) return "0:00";
@@ -253,6 +283,8 @@ export default function Page() {
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [lyricsOpen, setLyricsOpen] = useState(false);
+  const [lyricsTrackId, setLyricsTrackId] = useState<string>("");
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuDropdownPos, setMenuDropdownPos] = useState<{
@@ -350,6 +382,15 @@ export default function Page() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [infoOpen]);
+
+  useEffect(() => {
+    if (!lyricsOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLyricsOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [lyricsOpen]);
 
   const shareApp = async () => {
     const url =
@@ -510,13 +551,35 @@ export default function Page() {
                         : "scale-[0.93] opacity-60",
                     ].join(" ")}
                   >
-                    <div className="aspect-square overflow-hidden">
+                    <div className="relative aspect-square overflow-hidden">
                       <img
                         src={track.coverUrl}
                         alt={track.title}
                         draggable={false}
                         className="juke-cover-img h-full w-full object-cover"
                       />
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Se lyrics for ${track.title}`}
+                        title="Lyrics"
+                        className="absolute right-3 top-3 z-[50] inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/30 text-white/90 backdrop-blur-md transition hover:bg-black/40"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setLyricsTrackId(track.id);
+                          setLyricsOpen(true);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key !== "Enter" && e.key !== " ") return;
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setLyricsTrackId(track.id);
+                          setLyricsOpen(true);
+                        }}
+                      >
+                        <FileText className="h-5 w-5" strokeWidth={2} />
+                      </span>
                     </div>
                   </div>
 
@@ -540,11 +603,18 @@ export default function Page() {
         >
           <div className="mx-auto max-w-6xl px-4 py-3">
             <div className="flex items-center gap-3">
-              <img
-                src={current.coverUrl}
-                alt={current.title}
-                className="h-12 w-12 shrink-0 rounded-xl object-cover"
-              />
+              <button
+                type="button"
+                onClick={togglePlay}
+                aria-label={playing ? "Pause" : "Afspil"}
+                className="h-12 w-12 shrink-0 overflow-hidden rounded-xl transition active:scale-95"
+              >
+                <img
+                  src={current.coverUrl}
+                  alt={current.title}
+                  className="h-full w-full object-cover"
+                />
+              </button>
 
               <div className="min-w-0 flex-1">
                 <div className="truncate text-[15px] font-semibold leading-tight tracking-[-0.02em] text-white">
@@ -671,7 +741,7 @@ export default function Page() {
 
       {infoOpen && (
         <div
-          className="fixed inset-0 z-[600] flex items-end justify-center bg-black/45 p-4 sm:items-center"
+          className="fixed inset-0 z-[600] flex items-end justify-center bg-[#08132C]/35 p-4 backdrop-blur-xl sm:items-center"
           role="presentation"
           onClick={() => setInfoOpen(false)}
         >
@@ -679,26 +749,26 @@ export default function Page() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="info-dialog-title"
-            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] bg-white px-5 py-5 shadow-2xl"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
               <h2
                 id="info-dialog-title"
-                className="text-lg font-semibold text-[#0B1B46]"
+                className="text-lg font-semibold text-white/95"
               >
                 Om LykkeLiga Jukebox
               </h2>
               <button
                 type="button"
                 onClick={() => setInfoOpen(false)}
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#0B1B46]/60 transition hover:bg-black/5 hover:text-[#0B1B46]"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
                 aria-label="Luk"
               >
                 <X className="h-5 w-5" strokeWidth={2} />
               </button>
             </div>
-            <p className="mt-3 text-[15px] leading-relaxed text-slate-600">
+            <p className="mt-3 text-[15px] leading-relaxed text-white/75">
               LykkeLiga Jukebox er en lille musikafspiller med sange fra
               LykkeLiga. Vælg et nummer i karussellen, eller tænd for
               LykkeRadioen, så spiller den videre automatisk. God fornøjelse!
@@ -706,7 +776,46 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setInfoOpen(false)}
-              className="mt-5 w-full rounded-2xl bg-[#0B1B46] py-3 text-[15px] font-semibold text-white transition active:scale-[0.99]"
+              className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
+            >
+              Luk
+            </button>
+          </div>
+        </div>
+      )}
+
+      {lyricsOpen && (
+        <div
+          className="fixed inset-0 z-[650] flex items-end justify-center bg-[#08132C]/35 p-4 backdrop-blur-xl sm:items-center"
+          role="presentation"
+          onClick={() => setLyricsOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-lg font-semibold text-white/95">Lyrics</h2>
+              <button
+                type="button"
+                onClick={() => setLyricsOpen(false)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                aria-label="Luk"
+              >
+                <X className="h-5 w-5" strokeWidth={2} />
+              </button>
+            </div>
+
+            <pre className="mt-3 max-w-[38rem] whitespace-pre-wrap break-words bg-transparent text-[15px] leading-relaxed text-white/75">
+              {getLyrics(lyricsTrackId)}
+            </pre>
+
+            <button
+              type="button"
+              onClick={() => setLyricsOpen(false)}
+              className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
             >
               Luk
             </button>

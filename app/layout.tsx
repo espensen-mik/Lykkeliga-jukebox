@@ -5,7 +5,7 @@ import React from "react";
 const APP_TITLE = "LykkeLiga Jukebox";
 
 /** Bump when replacing public/icon.png so favicon / Add to Home Screen pick up the new asset */
-const ICON_VERSION = "2";
+const ICON_VERSION = "3";
 
 /** Warm cream — matches page background and iOS theme / splash tint */
 const THEME_COLOR = "#F5F0E6";
