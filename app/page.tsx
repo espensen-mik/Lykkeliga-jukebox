@@ -114,7 +114,7 @@ const lyricsByTrackId: Record<string, string> = {
   "nede-med-at-svede":
     "Her kommer sangteksten for “Nede med at svede”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
   "sammen-med-lars":
-    "Her kommer sangteksten for “Sammen med Lars er vi superstars”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Er I klar til LykkeLars\n\nLykken er lars\nLars er lykken\nLykke Lars han sørger, altid for hyggen\nHan kender alle tricks, alle finter\nHan kan gå i shorts når det er vinter\nNår Lars er med, så bli’r der fest  \nKom nu alle sammen “Lykke Lars er bedst!”\n\nSammen med Lars \nblir vi superstars \nLykke Lars kan kaste \nbolden helt til Mars \nHan er vores ven, vores kammerat \nOg Sammen med Lars \ner vi superstars\n\nLars er Smart\nLars er klog\nLykke Lars kan løfte et gammeldags tog\nHan kan være artig, han kan fjante\nHan kan kramme bedre end din tante\nNår Lars er med, så bli’r der fest  \nKom nu alle sammen “Lykke Lars er bedst!”\n\nSammen med Lars \nblir vi superstars \nLykke Lars kan kaste \nbolden helt til Mars \nHan er vores ven, vores kammerat \nOg Sammen med Lars \ner vi superstars\n\nLars han er flot og Lars han er høj\nLykke Lars har\ndet flotteste tøj\nHan er din ven, dit store idol\nLars han må gerne tage din stol\n\nSammen med Lars \nblir vi superstars \nLykke Lars kan kaste \nbolden helt til Mars \nHan er vores ven, vores kammerat \nOg Sammen med Lars \ner vi superstars\n\nLars han er den bedste\nHam kan ingen tæske\nRavnsborg er de bedste\nLykkeLiga er de bedste",
   scoresangen:
     "Her kommer sangteksten for “Scoresangen”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
   "se-mine-muller":
@@ -797,7 +797,15 @@ export default function Page() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-lg font-semibold text-white/95">Lyrics</h2>
+              <div className="flex flex-col gap-1">
+                <h2 className="text-lg font-semibold text-white/95">
+                  {tracks.find((t) => t.id === lyricsTrackId)?.title ??
+                    "Lyrics"}
+                </h2>
+                <p className="text-[12px] font-medium text-white/70">
+                  Sangtekst
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={() => setLyricsOpen(false)}
