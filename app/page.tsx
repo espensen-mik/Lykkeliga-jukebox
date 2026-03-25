@@ -106,6 +106,15 @@ const tracks: Track[] = [
     coverUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/vierlykkeliga.png",
   },
+  {
+    id: "tre-skridt",
+    title: "Tre skridt",
+    artist: "Souvenirs",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/Tre-Skridt-Mix.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/03/cover_3skridt.jpg",
+  },
 ];
 
 const lyricsByTrackId: Record<string, string> = {
@@ -419,16 +428,17 @@ export default function Page() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (playing) {
-      audio.pause();
-      setPlaying(false);
-    } else {
+    // Use the real audio state to avoid React state drifting.
+    if (audio.paused) {
       try {
         await audio.play();
         setPlaying(true);
       } catch {
         setPlaying(false);
       }
+    } else {
+      audio.pause();
+      setPlaying(false);
     }
   };
 
