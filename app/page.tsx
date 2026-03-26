@@ -293,6 +293,7 @@ export default function Page() {
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [musicInfoOpen, setMusicInfoOpen] = useState(false);
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const [lyricsTrackId, setLyricsTrackId] = useState<string>("");
   const [isLandscape, setIsLandscape] = useState(false);
@@ -446,6 +447,15 @@ export default function Page() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [lyricsOpen]);
+
+  useEffect(() => {
+    if (!musicInfoOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMusicInfoOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [musicInfoOpen]);
 
   const shareApp = async () => {
     const url =
@@ -612,7 +622,7 @@ export default function Page() {
                         src={track.coverUrl}
                         alt={track.title}
                         draggable={false}
-                        className="juke-cover-img h-full w-full object-cover"
+                        className="juke-cover-img h-full w-full bg-[#EDF3E2] object-contain"
                       />
                       <span
                         role="button"
@@ -679,7 +689,7 @@ export default function Page() {
                 <img
                   src={current.coverUrl}
                   alt={current.title}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full bg-[#EDF3E2] object-contain"
                 />
               </button>
 
@@ -765,7 +775,7 @@ export default function Page() {
               onClick={() => setMenuOpen(false)}
             />
             <div
-              className="fixed z-[10001] min-w-[11rem] overflow-hidden rounded-2xl border border-black/8 bg-white py-1.5 text-left shadow-[0_12px_40px_rgba(11,27,70,0.12)] ring-1 ring-black/5"
+              className="fixed z-[10001] min-w-[13rem] overflow-hidden rounded-2xl border border-white/20 bg-white/85 py-1.5 text-left shadow-[0_18px_50px_rgba(11,27,70,0.18)] backdrop-blur-md ring-1 ring-white/25"
               role="menu"
               style={{
                 top: menuDropdownPos.top,
@@ -775,7 +785,7 @@ export default function Page() {
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
                 onClick={() => {
                   setMenuOpen(false);
                   setInfoOpen(true);
@@ -786,7 +796,18 @@ export default function Page() {
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setMusicInfoOpen(true);
+                }}
+              >
+                Om musikken
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
                 onClick={shareApp}
               >
                 Del
@@ -796,7 +817,7 @@ export default function Page() {
                 href="https://lykkeliga.dk"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block px-4 py-2.5 text-[15px] text-[#0B1B46] transition hover:bg-[#0B1B46]/5"
+                className="block px-4 py-2.5 text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
                 onClick={() => setMenuOpen(false)}
               >
                 lykkeliga.dk
@@ -890,6 +911,78 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setLyricsOpen(false)}
+              className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
+            >
+              Luk
+            </button>
+          </div>
+        </div>
+      )}
+
+      {musicInfoOpen && (
+        <div
+          className="fixed inset-0 z-[640] flex items-center justify-center bg-[#08132C]/30 p-4 backdrop-blur-md"
+          role="presentation"
+          onClick={() => setMusicInfoOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-lg font-semibold text-white/95">
+                  Om musikken
+                </h2>
+                <p className="text-[12px] font-medium text-white/70">
+                  Historier fra banen
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMusicInfoOpen(false)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                aria-label="Luk"
+              >
+                <X className="h-5 w-5" strokeWidth={2} />
+              </button>
+            </div>
+
+            <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-white/75">
+              <p>
+                Sangene i LykkeLiga Jukebox er lavet af spillere, frivillige og
+                klubmiljoer fra hele landet. De handler om holdaand, mod og
+                glaeden ved at spille sammen.
+              </p>
+              <p>
+                Hver sang har sin egen energi - fra kaempe omkvaed til
+                hverdagslinjer, som alle kan synge med paa i hallen.
+              </p>
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <img
+                src={tracks[2].coverUrl}
+                alt={tracks[2].title}
+                className="aspect-square w-full rounded-xl bg-white/10 object-cover"
+              />
+              <img
+                src={tracks[7].coverUrl}
+                alt={tracks[7].title}
+                className="aspect-square w-full rounded-xl bg-white/10 object-cover"
+              />
+              <img
+                src={tracks[10].coverUrl}
+                alt={tracks[10].title}
+                className="aspect-square w-full rounded-xl bg-white/10 object-cover"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setMusicInfoOpen(false)}
               className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
             >
               Luk
