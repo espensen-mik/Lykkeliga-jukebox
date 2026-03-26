@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import React from "react";
+import SplashScreen from "./components/SplashScreen";
 
 const APP_TITLE = "LykkeLiga Jukebox";
 
@@ -38,7 +39,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="da">
-      <body>{children}</body>
+      <body>
+        <SplashScreen />
+        {children}
+      </body>
     </html>
   );
 }

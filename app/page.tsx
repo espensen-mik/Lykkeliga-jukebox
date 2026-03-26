@@ -295,6 +295,7 @@ export default function Page() {
   const [infoOpen, setInfoOpen] = useState(false);
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const [lyricsTrackId, setLyricsTrackId] = useState<string>("");
+  const [isLandscape, setIsLandscape] = useState(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuDropdownPos, setMenuDropdownPos] = useState<{
@@ -310,6 +311,12 @@ export default function Page() {
   useEffect(() => {
     // Best-effort orientation lock for iOS web-app mode.
     // Note: browsers typically require a user gesture; we try on mount and on first tap.
+    const updateLandscape = () => {
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    };
+
+    updateLandscape();
+
     const tryLockPortrait = async () => {
       try {
         const so: any = (window as any).screen?.orientation;
@@ -325,6 +332,7 @@ export default function Page() {
 
     const onFirstTouch = () => {
       void tryLockPortrait();
+      updateLandscape();
       window.removeEventListener("touchstart", onFirstTouch);
     };
 
@@ -332,12 +340,15 @@ export default function Page() {
 
     const onOrientationChange = () => {
       void tryLockPortrait();
+      updateLandscape();
     };
     window.addEventListener("orientationchange", onOrientationChange);
+    window.addEventListener("resize", updateLandscape);
 
     return () => {
       window.removeEventListener("orientationchange", onOrientationChange);
       window.removeEventListener("touchstart", onFirstTouch);
+      window.removeEventListener("resize", updateLandscape);
     };
   }, []);
 
@@ -652,16 +663,18 @@ export default function Page() {
                 type="button"
                 onClick={() => {
                   if (Date.now() - suppressCoverClickRef.current < 600) return;
-                  togglePlay();
+                  suppressCoverClickRef.current = Date.now();
+                  void togglePlay();
+                }}
+                onTouchStart={(e) => {
+                  if (Date.now() - suppressCoverClickRef.current < 600) return;
+                  if (e.cancelable) e.preventDefault();
+                  e.stopPropagation();
+                  suppressCoverClickRef.current = Date.now();
+                  void togglePlay();
                 }}
                 aria-label={playing ? "Pause" : "Afspil"}
                 className="h-12 w-12 shrink-0 overflow-hidden rounded-xl transition active:scale-95"
-                onPointerDown={(e) => {
-                  if (e.pointerType !== "touch") return;
-                  suppressCoverClickRef.current = Date.now();
-                  e.stopPropagation();
-                  togglePlay();
-                }}
               >
                 <img
                   src={current.coverUrl}
@@ -881,6 +894,22 @@ export default function Page() {
             >
               Luk
             </button>
+          </div>
+        </div>
+      )}
+
+      {isLandscape && (
+        <div
+          className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/35 p-4"
+          role="presentation"
+        >
+          <div className="max-w-md rounded-[28px] border border-white/20 bg-white/10 px-6 py-6 text-center backdrop-blur-md">
+            <div className="text-[16px] font-semibold text-white/95">
+              Drej tilbage til portræt
+            </div>
+            <div className="mt-2 text-[13px] leading-relaxed text-white/75">
+              LykkeLiga Jukebox er designet til at køre i lodret visning.
+            </div>
           </div>
         </div>
       )}

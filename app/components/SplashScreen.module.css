@@ -1,0 +1,61 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+  /* Extracted from the reference screenshot: near-solid #7CEC6C */
+  background: linear-gradient(180deg, #7beb6b 0%, #7cec6c 100%);
+
+  z-index: 999999;
+  opacity: 1;
+  transition: opacity 450ms ease;
+  pointer-events: auto;
+
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 104px;
+  height: auto;
+
+  animation: iconBreath 1.85s ease-in-out infinite;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  bottom: calc(69px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+
+  width: 155px;
+  height: auto;
+}
+
+@keyframes iconBreath {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.04);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
