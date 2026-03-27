@@ -617,11 +617,11 @@ export default function Page() {
                   key={track.id}
                   data-index={i}
                   onClick={() => selectTrack(i)}
-                  className="w-[68vw] max-w-[300px] shrink-0 snap-center text-left"
+                  className="flex w-[68vw] max-w-[300px] shrink-0 snap-center flex-col text-left"
                 >
                   <div
                     className={[
-                      "overflow-hidden rounded-[28px] bg-white shadow-[0_12px_34px_rgba(11,27,70,0.08)] ring-1 ring-black/5 transition duration-300",
+                      "shrink-0 overflow-hidden rounded-[28px] bg-white shadow-[0_12px_34px_rgba(11,27,70,0.08)] ring-1 ring-black/5 transition duration-300",
                       active
                         ? "scale-100 opacity-100"
                         : "scale-[0.93] opacity-60",
@@ -659,11 +659,11 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <div className="pb-1 pl-3 pr-1 pt-2.5">
-                    <div className="line-clamp-2 text-[18px] font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1B46]">
+                  <div className="flex flex-col pb-1 pl-3 pr-1 pt-2.5">
+                    <div className="line-clamp-2 min-h-[2.1em] text-[18px] font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1B46]">
                       {track.title}
                     </div>
-                    <div className="mt-0.5 text-[14px] leading-snug text-slate-500">
+                    <div className="mt-1 min-h-[1.35rem] text-[14px] leading-snug text-slate-500">
                       Kunstner: {track.artist}
                     </div>
                   </div>
