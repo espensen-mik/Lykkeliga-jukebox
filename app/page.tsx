@@ -294,6 +294,7 @@ export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [musicInfoOpen, setMusicInfoOpen] = useState(false);
+  const [saveAsAppOpen, setSaveAsAppOpen] = useState(false);
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const [lyricsTrackId, setLyricsTrackId] = useState<string>("");
   const [isLandscape, setIsLandscape] = useState(false);
@@ -456,6 +457,15 @@ export default function Page() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [musicInfoOpen]);
+
+  useEffect(() => {
+    if (!saveAsAppOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSaveAsAppOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [saveAsAppOpen]);
 
   const shareApp = async () => {
     const url =
@@ -622,7 +632,7 @@ export default function Page() {
                         src={track.coverUrl}
                         alt={track.title}
                         draggable={false}
-                        className="juke-cover-img h-full w-full bg-[#EDF3E2] object-contain"
+                        className="juke-cover-img block h-full w-full object-cover object-top"
                       />
                       <span
                         role="button"
@@ -649,11 +659,11 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <div className="px-1 pb-1 pt-4">
+                  <div className="pb-1 pl-3 pr-1 pt-2.5">
                     <div className="line-clamp-2 text-[18px] font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1B46]">
                       {track.title}
                     </div>
-                    <div className="mt-1.5 text-[14px] leading-snug text-slate-500">
+                    <div className="mt-0.5 text-[14px] leading-snug text-slate-500">
                       Kunstner: {track.artist}
                     </div>
                   </div>
@@ -689,7 +699,7 @@ export default function Page() {
                 <img
                   src={current.coverUrl}
                   alt={current.title}
-                  className="h-full w-full bg-[#EDF3E2] object-contain"
+                  className="block h-full w-full object-cover object-top"
                 />
               </button>
 
@@ -775,17 +785,25 @@ export default function Page() {
               onClick={() => setMenuOpen(false)}
             />
             <div
-              className="fixed z-[10001] min-w-[13rem] overflow-hidden rounded-2xl border border-white/20 bg-white/85 py-1.5 text-left shadow-[0_18px_50px_rgba(11,27,70,0.18)] backdrop-blur-md ring-1 ring-white/25"
+              className="fixed z-[10001] min-w-[13.75rem] overflow-hidden rounded-2xl border border-white/20 bg-[#08132C]/92 py-1.5 text-left shadow-[0_20px_56px_rgba(11,27,70,0.45)] backdrop-blur-xl ring-1 ring-white/10"
               role="menu"
               style={{
                 top: menuDropdownPos.top,
                 right: menuDropdownPos.right,
               }}
             >
+              <div className="px-4 pb-3 pt-3">
+                <img
+                  src="/lykkeliga-logo.svg"
+                  alt="LykkeLiga"
+                  className="h-6 w-auto opacity-95"
+                />
+              </div>
+              <div className="mx-3 h-px bg-white/15" />
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={() => {
                   setMenuOpen(false);
                   setInfoOpen(true);
@@ -796,7 +814,7 @@ export default function Page() {
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={() => {
                   setMenuOpen(false);
                   setMusicInfoOpen(true);
@@ -807,7 +825,18 @@ export default function Page() {
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setSaveAsAppOpen(true);
+                }}
+              >
+                Gem som app
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={shareApp}
               >
                 Del
@@ -817,7 +846,7 @@ export default function Page() {
                 href="https://lykkeliga.dk"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block px-4 py-2.5 text-[15px] font-medium text-[#0B1B46] transition hover:bg-[#0B1B46]/10"
+                className="block px-4 py-2.5 text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={() => setMenuOpen(false)}
               >
                 lykkeliga.dk
@@ -983,6 +1012,58 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setMusicInfoOpen(false)}
+              className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
+            >
+              Luk
+            </button>
+          </div>
+        </div>
+      )}
+
+      {saveAsAppOpen && (
+        <div
+          className="fixed inset-0 z-[641] flex items-center justify-center bg-[#08132C]/30 p-4 backdrop-blur-md"
+          role="presentation"
+          onClick={() => setSaveAsAppOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex flex-col gap-1">
+                <h2 className="text-lg font-semibold text-white/95">
+                  Gem som app
+                </h2>
+                <p className="text-[12px] font-medium text-white/70">
+                  Hurtig guide til iPhone
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSaveAsAppOpen(false)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                aria-label="Luk"
+              >
+                <X className="h-5 w-5" strokeWidth={2} />
+              </button>
+            </div>
+
+            <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-white/75">
+              <p>1. Aaben siden i Safari paa din iPhone.</p>
+              <p>
+                2. Tryk paa delingsikonet (firkant med pil op) nederst i
+                Safari.
+              </p>
+              <p>3. Vaelg "Add to Home Screen" / "Foj til hjemmeskarm".</p>
+              <p>4. Tryk "Add", og aaben appen fra hjemmeskarmen.</p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setSaveAsAppOpen(false)}
               className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
             >
               Luk
