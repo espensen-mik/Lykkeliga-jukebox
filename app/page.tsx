@@ -121,21 +121,21 @@ const lyricsByTrackId: Record<string, string> = {
   "hop-hop-hop":
     "Her kommer sangteksten for “Hop hop hop”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
   "nede-med-at-svede":
-    "Her kommer sangteksten for “Nede med at svede”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Er I nede med at svede LykkeLiga\n\nPerler på panden, det drypper\nDer er en flod ned af min ryg\nBriller der dugger, jeg sveder\nVi gir den endnu et nyk\n\nEr du nede, med at svede\nPulsen op - og kom i gang\nHvis du er nede, med at svede\nSå syng med på, vores sang\n\nHåret er vådt, det sprøjter\nMan sku tro jeg havde været i bad\nHåndbold er hårdt, jeg sveder\nMit hold det gør mig glad\n\nKampråb\nVenner,\nVi griner\nDet er verdens bedste sammenhold\n3-2-1\n\nEr du nede, med at svede\nPulsen op - og kom i gang\nHvis du er nede, med at svede\nSå syng med på, vores sang\n\nRingsted er nede med at svede\nVi er nede med at svede",
   "sammen-med-lars":
     "Er I klar til LykkeLars\n\nLykken er lars\nLars er lykken\nLykke Lars han sørger, altid for hyggen\nHan kender alle tricks, alle finter\nHan kan gå i shorts når det er vinter\nNår Lars er med, så bli’r der fest  \nKom nu alle sammen “Lykke Lars er bedst!”\n\nSammen med Lars \nblir vi superstars \nLykke Lars kan kaste \nbolden helt til Mars \nHan er vores ven, vores kammerat \nOg Sammen med Lars \ner vi superstars\n\nLars er Smart\nLars er klog\nLykke Lars kan løfte et gammeldags tog\nHan kan være artig, han kan fjante\nHan kan kramme bedre end din tante\nNår Lars er med, så bli’r der fest  \nKom nu alle sammen “Lykke Lars er bedst!”\n\nSammen med Lars \nblir vi superstars \nLykke Lars kan kaste \nbolden helt til Mars \nHan er vores ven, vores kammerat \nOg Sammen med Lars \ner vi superstars\n\nLars han er flot og Lars han er høj\nLykke Lars har\ndet flotteste tøj\nHan er din ven, dit store idol\nLars han må gerne tage din stol\n\nSammen med Lars \nblir vi superstars \nLykke Lars kan kaste \nbolden helt til Mars \nHan er vores ven, vores kammerat \nOg Sammen med Lars \ner vi superstars\n\nLars han er den bedste\nHam kan ingen tæske\nRavnsborg er de bedste\nLykkeLiga er de bedste",
   scoresangen:
-    "Her kommer sangteksten for “Scoresangen”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Vi er fra Ravnsborg - og vi er kommet for at score\n\nVi vil, vi vil score, vi vil score\nVi er nummer et og ikke toer\nDamer og mål-rekord, Vi skyder ægte hårdt\nfrikast til morgenmad, der er byfest i mester stad?\n\nVi vil, vi vil score, vi vil score\nVi er nummer et og ikke toer\nVi vil, Vi vil score, vi vil score\nVi er nummer ét og ikke toer\n\nVi vil, vi vil score, vi vil score\nVores statistikker de er store\nKan ikke tælle så højt, dommer ta' nu og fløjt\nDer er målmand til aftensmad, highlights på fintefad\n\nVi vil, vi vil score, vi vil score\nVi er nummer et og ikke toer\nVi vil, Vi vil score, vi vil score\nVi er nummer ét og ikke toer\n\nBaby så du den kasse, jeg har scoret en masse\nDet er liga med lykke her,  op med de arme dér\n\nVi er LykkeLiga\nVi er lykkeLiga\nVi vil score\nVi er nummer ét og ikke toer!",
   "se-mine-muller":
-    "Her kommer sangteksten for “Se mine muller”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Denne her går ud til alle LykkeLiga spillere - direkte fra Skive FH\n\nFør der var jeg lille, men nu er jeg blevet stor\nMine arme de var slappe, nu løfter jeg min mor\nHåndbold gør mig stærk og nu har jeg fået guns\nVil du lægge arm, jeg er der med det vons\n\nSE MINE MULLER\nMÆRK MINE MULLER\nMens jeg spiller håndbold, kan du sidde på min skulder\nSE MINE MULLER\nMÆRK MINE MULLER\nArmene er kæmpe på mors lille nuller\n\nMine arme vokser, det er gået helt amok\nTrøjen er for lille, det er ved at være nok\nMusklerne er kæmpe og jeg kaster alt for hårdt\nNår jeg ikke rammer så er det noget…\n\nSE MINE MULLER\nMÆRK MINE MULLER\nMens jeg pumper jern kan du sidde på min skulder\nSE MINE MULLER\nMÆRK MINE MULLER\nSe mig løbe stærk så øjnene de ruller\n\nStærk som den kaffe din mormor hun drikker\nStærk som et gækkebrev med rigtigt mange prikker\nStærk som en ost, din far han æder\nStærk som en jakke der er lavet af læder\n\nSE MINE MULLER\nMÆRK MINE MULLER\nMens jeg pumper jern kan du sidde på min skulder\nSE MINE MULLER\nMÆRK MINE MULLER\nSe mig løbe stærk så øjnene de ruller\nSE MINE MULLER\nMÆRK MINE MULLER\nAlle os i LykkeLiga vi har kæmpe Muller!",
   "vi-er-sammenholdet":
-    "Her kommer sangteksten for “Vi er Sammenholdet”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Alting er på spil\nDet er sammenspil\nVi hepper på hinanden og vi griner\nLøfter venner op som trampoliner\n\nDu er med på holdet\nSammenholdet\nAlle sammen er på holdet\nSammenholdet\nVi er Sammenholdet\n\nGir du ik et kram\nDu kan dit kram\nVi træner allesammen og vi sveder\nRøde kinder lige som rødbeder\n\nDu er med på holdet\nSammenholdet\nAlle sammen er på holdet\nSammenholdet\nVi er Sammenholdet\n\nGåsen er på holdet\nSammenholdet\nLykkeLars på holdet\nSammenholdet\nAlle er på holdet\nSammenholdet\n\nAlting er på spil\nDet er sammenspil\nVi hepper på hinanden og vi griner\nLøfter venner op som trampoliner\n\nDu er med på holdet\nSammenholdet\nAlle sammen er på holdet\nSammenholdet\nVi er Sammenholdet",
   "vi-vinder-lykkecup":
-    "Her kommer sangteksten for “Vi vinder LykkeCup”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "I dag der blir vi mestre\nDet er os de klapper af\nSejren den er vores\nVi vinder guld i dag\n\nVi skruer lyden op\nFor der er LykkeCup\nI dag der blir vi mestre\nVi vinder LykkeCup\n\nDet kilder i min mave\nPokalen den er klar\nI dag er vi de kendte\nI dag er jeg en star\n\nVi skruer lyden op\nFor der er LykkeCup\nI dag der blir vi mestre\nVi vinder Lykke Cup\n\nVi er fra Vordingborg\ni dag der blir vi mestre\nAlle i vores liga\nDe vinder guld i år\n\nVi skruer lyden op\nFor der er LykkeCup\nI dag der blir vi mestre\nVi vinder Lykke Cup",
   "vi-spiller-klassebold":
-    "Vi spiller Klassebold\nSangtekst\n\nOp ad stolen\nBold I skolen\nVi vil meget hellere spille, \nend at sidde og pille\nBussemænd\nVi scorer igen og igen\n\nNår vi spiller er det klasse bold\nVores klasse den er blevet et hold\nVi står sammen og vi scorer mål\nVores muskler de er lavet af stål\n\nUd på banen\nSpis bananen\nVi vil meget hellere spille, \nend at sidde stille\nKom min ven\nVi scorer igen og igen\n\nVi spiller klasse bold\nVi gider ikke sidde stille\nklasse bold\nHåndbold gør os vilde",
+    "Vi spiller Klassebold\n\nOp ad stolen\nBold I skolen\nVi vil meget hellere spille, \nend at sidde og pille\nBussemænd\nVi scorer igen og igen\n\nNår vi spiller er det klasse bold\nVores klasse den er blevet et hold\nVi står sammen og vi scorer mål\nVores muskler de er lavet af stål\n\nUd på banen\nSpis bananen\nVi vil meget hellere spille, \nend at sidde stille\nKom min ven\nVi scorer igen og igen\n\nVi spiller klasse bold\nVi gider ikke sidde stille\nklasse bold\nHåndbold gør os vilde",
   "venner-viser-taender":
-    "Her kommer sangteksten for “Venner viser tænder”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Chippi chippi chappa chappa\n\nBrug dine læber\nStram i de kæber\nVis dine pløkker\nDet er dem som tygger\n\nGiv et smil\nDet er ægte lykke stil\nVenner viser tænder \nSom et kærligheds missil\n\nVenner  \nViser tænder  \nSmil til dine venner\nVis dem dine tænder\n\nFrem med dine gummer\nLyt til vores nummer\nSkive gir den op\nVi vil høre pop\n\nVis dit smil\nDet er ægte lykke stil\nVenner viser tænder \nSom et lykkeligt missil\n\nVenner  \nViser tænder  \nSmil til dine venner\nVis dem dine tænder\n\nChippi chippi, chippa chippa\nLykkeLiga wappa wappa\n\nBrug dine læber\nStram i de kæber\nVis dine pløkker\nDet er dem som tygger\n\nGiv et smil\nDet er ægte lykke stil\nVenner viser tænder \nSom et kærligheds missil\n\nVenner  \nViser tænder  \nSmil til dine venner\nVis dem dine tænder",
   "vi-er-lykkeliga":
     "Her kommer sangteksten for “Vi er LykkeLiga”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
 };
@@ -914,15 +914,9 @@ export default function Page() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="flex flex-col gap-1">
-                <h2 className="text-lg font-semibold text-white/95">
-                  {tracks.find((t) => t.id === lyricsTrackId)?.title ??
-                    "Lyrics"}
-                </h2>
-                <p className="text-[12px] font-medium text-white/70">
-                  Sangtekst
-                </p>
-              </div>
+              <h2 className="text-lg font-semibold text-white/95">
+                {tracks.find((t) => t.id === lyricsTrackId)?.title ?? "Lyrics"}
+              </h2>
               <button
                 type="button"
                 onClick={() => setLyricsOpen(false)}
