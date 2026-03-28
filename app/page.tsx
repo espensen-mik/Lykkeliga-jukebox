@@ -955,14 +955,9 @@ export default function Page() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="flex flex-col gap-1">
-                <h2 className="text-lg font-semibold text-white/95">
-                  Om musikken
-                </h2>
-                <p className="text-[12px] font-medium text-white/70">
-                  Historier fra banen
-                </p>
-              </div>
+              <h2 className="text-lg font-semibold text-white/95">
+                Om musikken
+              </h2>
               <button
                 type="button"
                 onClick={() => setMusicInfoOpen(false)}
@@ -973,33 +968,48 @@ export default function Page() {
               </button>
             </div>
 
-            <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-white/75">
+            <div className="mt-3 text-[15px] leading-relaxed text-white/75">
               <p>
-                Sangene i LykkeLiga Jukebox er lavet af spillere, frivillige og
-                klubmiljoer fra hele landet. De handler om holdaand, mod og
-                glaeden ved at spille sammen.
-              </p>
-              <p>
-                Hver sang har sin egen energi - fra kaempe omkvaed til
-                hverdagslinjer, som alle kan synge med paa i hallen.
+                Mange af sangene i denne app er udviklet i tæt samarbejde med
+                LykkeLiga spillere i forskellige klubber over hele landet.
+                Spillerne har selv defineret lyd og tema og er kommet med
+                indspark og ord til teksterne. De har nynnet, fløjtet og
+                dirigeret. På den måde er sangene helt deres egne. Selve
+                musikken er produceret med hjælp fra forskellige AI-tjenester.
               </p>
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2">
               <img
-                src={tracks[2].coverUrl}
-                alt={tracks[2].title}
+                src="/1.jpg"
+                alt=""
                 className="aspect-square w-full rounded-xl bg-white/10 object-cover"
               />
               <img
-                src={tracks[7].coverUrl}
-                alt={tracks[7].title}
+                src="/2.jpg"
+                alt=""
                 className="aspect-square w-full rounded-xl bg-white/10 object-cover"
               />
               <img
-                src={tracks[10].coverUrl}
-                alt={tracks[10].title}
+                src="/3.jpg"
+                alt=""
                 className="aspect-square w-full rounded-xl bg-white/10 object-cover"
+              />
+            </div>
+
+            <p className="mt-2 text-[12px] leading-snug text-white/60">
+              Billedtekst: LykkeLigaholdet &quot;Guldgåsen&quot; fra Vordingborg
+              i musik workshop sammen med LykkeLiga medarbejdere.
+            </p>
+
+            <div className="mt-6 flex flex-col items-center gap-2 border-t border-white/15 pt-5">
+              <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-white/55">
+                Støttet af
+              </p>
+              <img
+                src="/helesefonden_logo_red.png"
+                alt="Helsefonden"
+                className="h-10 w-auto max-w-[200px] object-contain opacity-95"
               />
             </div>
 
