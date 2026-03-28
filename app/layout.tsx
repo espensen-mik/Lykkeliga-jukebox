@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import React from "react";
 
-const APP_TITLE = "LykkeLiga Jukebox";
+const APP_TITLE = "LykkeMusik";
 
 /** Bump when replacing public/icon.png so favicon / Add to Home Screen pick up the new asset */
 const ICON_VERSION = "3";
@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: APP_TITLE,
-  description: "En glad lille jukebox til LykkeLiga-musik",
+  description: "LykkeMusik — musik fra LykkeLiga",
   applicationName: APP_TITLE,
   appleWebApp: {
     capable: true,

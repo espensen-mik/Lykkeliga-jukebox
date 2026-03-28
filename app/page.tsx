@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { MicVocal, Menu, Radio, X } from "lucide-react";
+import { MicVocal, Menu, Radio, TvMinimalPlay, X } from "lucide-react";
 
 type Track = {
   id: string;
@@ -119,7 +119,7 @@ const tracks: Track[] = [
 
 const lyricsByTrackId: Record<string, string> = {
   "hop-hop-hop":
-    "Her kommer sangteksten for “Hop hop hop”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+    "Hop, hop, hop\nHop, hop, hop\n\nUd på gulvet vi skal svede nu\nHvem skal hoppe, det skal du\nGør dig klar, du er superstar\nIngen kære mor og far\n\nHop, hop, hop\nvi er LykkeLiga\nHop, hop, hop\nPulsen den skal op\nHop, hop, hop\nvi er LykkeLiga\nVi ligger faktisk helt i top\n\nNed på maven, og rul så rundt\nOp igen, Det er mega sundt\nLøb nu lidt, Så du får det hedt\nDet er faktisk super fedt\n\nHop, hop, hop\nvi er LykkeLiga\nHop, hop, hop\nPulsen den skal op\nHop, hop, hop\nvi er LykkeLiga\nVi ligger faktisk helt i top\n\nLuk dine øjne, og slap nu af\nI LykkeLiga er der ingen nederlag\nGør dig klar, det går helt amok\nHop så din træner går i chok\n\nHop, hop, hop\nvi er LykkeLiga\nHop, hop, hop\nPulsen den skal op\nHop, hop, hop\nvi er LykkeLiga\nVi ligger faktisk helt i top\n\nHop, hop, hop\nMed Ringsted TMS\nHop, hop, hop\nVi ligger faktisk helt i top",
   "nede-med-at-svede":
     "Er I nede med at svede LykkeLiga\n\nPerler på panden, det drypper\nDer er en flod ned af min ryg\nBriller der dugger, jeg sveder\nVi gir den endnu et nyk\n\nEr du nede, med at svede\nPulsen op - og kom i gang\nHvis du er nede, med at svede\nSå syng med på, vores sang\n\nHåret er vådt, det sprøjter\nMan sku tro jeg havde været i bad\nHåndbold er hårdt, jeg sveder\nMit hold det gør mig glad\n\nKampråb\nVenner,\nVi griner\nDet er verdens bedste sammenhold\n3-2-1\n\nEr du nede, med at svede\nPulsen op - og kom i gang\nHvis du er nede, med at svede\nSå syng med på, vores sang\n\nRingsted er nede med at svede\nVi er nede med at svede",
   "sammen-med-lars":
@@ -136,8 +136,136 @@ const lyricsByTrackId: Record<string, string> = {
     "Vi spiller Klassebold\n\nOp ad stolen\nBold I skolen\nVi vil meget hellere spille, \nend at sidde og pille\nBussemænd\nVi scorer igen og igen\n\nNår vi spiller er det klasse bold\nVores klasse den er blevet et hold\nVi står sammen og vi scorer mål\nVores muskler de er lavet af stål\n\nUd på banen\nSpis bananen\nVi vil meget hellere spille, \nend at sidde stille\nKom min ven\nVi scorer igen og igen\n\nVi spiller klasse bold\nVi gider ikke sidde stille\nklasse bold\nHåndbold gør os vilde",
   "venner-viser-taender":
     "Chippi chippi chappa chappa\n\nBrug dine læber\nStram i de kæber\nVis dine pløkker\nDet er dem som tygger\n\nGiv et smil\nDet er ægte lykke stil\nVenner viser tænder \nSom et kærligheds missil\n\nVenner  \nViser tænder  \nSmil til dine venner\nVis dem dine tænder\n\nFrem med dine gummer\nLyt til vores nummer\nSkive gir den op\nVi vil høre pop\n\nVis dit smil\nDet er ægte lykke stil\nVenner viser tænder \nSom et lykkeligt missil\n\nVenner  \nViser tænder  \nSmil til dine venner\nVis dem dine tænder\n\nChippi chippi, chippa chippa\nLykkeLiga wappa wappa\n\nBrug dine læber\nStram i de kæber\nVis dine pløkker\nDet er dem som tygger\n\nGiv et smil\nDet er ægte lykke stil\nVenner viser tænder \nSom et kærligheds missil\n\nVenner  \nViser tænder  \nSmil til dine venner\nVis dem dine tænder",
-  "vi-er-lykkeliga":
-    "Her kommer sangteksten for “Vi er LykkeLiga”.\n\n(Indhold er en simpel placeholder, så vi kan teste UI-funktionen.)",
+  "vi-er-lykkeliga": `Jeg ville gerne spille håndbold, være med
+Nu er min LykkeLiga mit yndlingssted
+Nu er jeg håndboldspiller, lige noget for mig
+For her kan jeg jo være mig selv sammen med dig
+
+Så nu tror jeg på mig
+Og nu tror jeg på dig
+Og nu tror vi på os
+Vi vil kæmpe os slås
+For sejr
+
+Vi er LykkeLiga
+Her hvor sammenholdet gror
+I LykkeLiga
+Kan vi mere end du tror
+Der er ikke noget vi ikke kan
+Når vi står sammen alle mand
+Håndboldstjerne stor som lille
+LykkeLiga vi vil spille håndbold
+
+I LykkeLiga kan det hele lade sig gøre
+For her er højt til loftet prøv bare og hør
+Vi elsker alt lige fra kampråb til pommes frites
+Og vores fællesskab det er helt unikt
+
+Så nu tror jeg på mig
+Og nu tror jeg på dig
+Og nu tror vi på os
+Vi vil kæmpe os slås
+For sejr
+
+Vi er LykkeLiga
+Her hvor sammenholdet gror
+I LykkeLiga
+Kan vi mere end du tror
+Der er ikke noget vi ikke kan
+Når vi står sammen alle mand
+Håndboldstjerne stor som lille
+LykkeLiga vi vil spille håndbold
+
+Vi spiller håndbold, vi har vilje vi har smil
+og skud og finter det er vores håndboldstil
+Med attitude og med bolden i vor hånd
+Spiller vi bedre i den positive ånd
+
+Så nu tror jeg på mig
+Og nu tror jeg på dig
+Og nu tror vi på os
+Vi vil kæmpe os slås
+For sejr
+
+Vi er LykkeLiga
+Her hvor sammenholdet gror
+I LykkeLiga
+Kan vi mere end du tror
+Der er ikke noget vi ikke kan
+Når vi står sammen alle mand
+Håndboldstjerne stor som lille
+LykkeLiga vi vil spille håndbold
+
+Med sved på panden giver vi den mega gas
+Et skulderklap og highfive er vist på sin plads
+Vi knytter venskabsbånd og spiller vores spil
+Mens vores familier følger med og hepper til
+
+Så nu tror jeg på mig
+Og nu tror jeg på dig
+Og nu tror vi på os
+Vi vil kæmpe os slås
+For sejr
+
+Vi er LykkeLiga
+Her hvor sammenholdet gror
+I LykkeLiga
+Kan vi mere end du tror
+Der er ikke noget vi ikke kan
+Når vi står sammen alle mand
+Håndboldstjerne stor som lille
+LykkeLiga vi vil spille håndbold`,
+  "tre-skridt": `3-2-1 hvem hepper vi på?
+
+3-2-1 hvem hepper vi på?
+
+Vi skal op og score nogle mål
+op og score nogle mål
+Ja, vi skal op og score nogle mål
+Man må sno sig, som en ål
+
+Vi skal op og score nogle mål
+op og score en hel masse mål
+Ja, vi skal op og score nogle mål
+
+Du må ik tage mere end tre skridt
+Hvis du vil lave en finte som Radjenovic
+Vi vil alle sammen helst være nummer 1
+Men du må ik tage mere end tre skridt
+Nej du må ik tage mere end tre skridt
+
+Vi skal op og score nogle mål
+op og score nogle mål
+Ja, vi skal op og score nogle mål
+Man må sno sig, som en ål
+
+Vi skal op og score nogle mål
+op og score en hel masse mål
+Ja, vi skal op og score nogle mål
+
+Vi har ne-ne-ne-ne-nerver af stål
+ne-ne-ne-ne-nerver af stål
+Vi skal op og score nogle mål
+
+Tre skridt
+
+Du må ik tage mere end tre skridt
+Hvis du vil lave en finte som Radjenovic
+Vi vil alle sammen helst være nummer 1
+Men du må ik tage mere end tre skridt
+
+Måske har du lyst til at tage fler
+Tre skridt
+Så skal du aflevere
+
+Måske har du lyst til at tage fler
+Tre skridt
+Så skal du aflevere
+
+Tre skridt, tre skridt, tre skridt
+
+3-2-1 hvem hepper vi på?
+LykkeLiga`,
 };
 
 function getLyrics(trackId: string) {
@@ -145,6 +273,17 @@ function getLyrics(trackId: string) {
     lyricsByTrackId[trackId] ??
     "Ingen lyrics er indlæst endnu for denne sang."
   );
+}
+
+/** YouTube video id per track (embed stays in-app). */
+const MUSIC_VIDEO_BY_TRACK_ID: Record<string, string> = {
+  "sammen-med-lars": "GNnyhAiJB_M",
+  "vi-er-lykkeliga": "X-2Oj99d7aY",
+  "tre-skridt": "n7HKO2cSVks",
+};
+
+function youtubeEmbedSrc(videoId: string) {
+  return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
 }
 
 function formatTime(seconds: number) {
@@ -206,17 +345,17 @@ function RadioToggle({
       aria-label={ariaLabel ?? "LykkeRadio"}
       onClick={onChange}
       className={[
-        "relative h-9 w-14 shrink-0 rounded-full transition-colors duration-200",
+        "relative h-8 w-12 shrink-0 rounded-full transition-colors duration-200",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0B1B46]",
         checked
-          ? "bg-[#7CFF6B] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_14px_rgba(124,255,107,0.35)]"
+          ? "bg-[#7CFF6B] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_3px_12px_rgba(124,255,107,0.32)]"
           : "bg-slate-300/90",
       ].join(" ")}
     >
       <span
         className={[
-          "absolute left-1 top-1 h-7 w-7 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.18)] ring-1 ring-black/5 transition-transform duration-200 ease-out",
-          checked ? "translate-x-5" : "translate-x-0",
+          "absolute left-1 top-1 h-6 w-6 rounded-full bg-white shadow-[0_1px_5px_rgba(0,0,0,0.16)] ring-1 ring-black/5 transition-transform duration-200 ease-out",
+          checked ? "translate-x-4" : "translate-x-0",
         ].join(" ")}
       />
     </button>
@@ -297,6 +436,8 @@ export default function Page() {
   const [saveAsAppOpen, setSaveAsAppOpen] = useState(false);
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const [lyricsTrackId, setLyricsTrackId] = useState<string>("");
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [videoTrackId, setVideoTrackId] = useState<string>("");
   const [isLandscape, setIsLandscape] = useState(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -450,6 +591,18 @@ export default function Page() {
   }, [lyricsOpen]);
 
   useEffect(() => {
+    if (!videoOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setVideoOpen(false);
+        setVideoTrackId("");
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [videoOpen]);
+
+  useEffect(() => {
     if (!musicInfoOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMusicInfoOpen(false);
@@ -475,8 +628,8 @@ export default function Page() {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "LykkeLiga Jukebox",
-          text: "LykkeLiga Jukebox",
+          title: "LykkeMusik",
+          text: "LykkeMusik",
           url,
         });
       } else if (navigator.clipboard?.writeText) {
@@ -538,6 +691,23 @@ export default function Page() {
     }
   };
 
+  const closeVideoModal = () => {
+    setVideoOpen(false);
+    setVideoTrackId("");
+  };
+
+  const openMusicVideo = (trackId: string) => {
+    if (!MUSIC_VIDEO_BY_TRACK_ID[trackId]) return;
+    const a = audioRef.current;
+    if (a && !a.paused) {
+      a.pause();
+      setPlaying(false);
+    }
+    setLyricsOpen(false);
+    setVideoTrackId(trackId);
+    setVideoOpen(true);
+  };
+
   const progress = useMemo(() => {
     if (!duration) return 0;
     return Math.min((time / duration) * 100, 100);
@@ -560,7 +730,7 @@ export default function Page() {
         <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
-              LykkeLiga JukeBox
+              LykkeMusik
             </h1>
             <div ref={menuRef} className="absolute right-0 top-1/2 -translate-y-1/2">
               <button
@@ -585,7 +755,7 @@ export default function Page() {
                   aria-hidden
                 />
                 <span className="text-[17px] font-semibold tracking-[-0.03em] text-[#0B1B46]">
-                  LykkeLiga Radio
+                  LykkeRadio
                 </span>
               </div>
               <RadioToggle
@@ -634,6 +804,31 @@ export default function Page() {
                         draggable={false}
                         className="juke-cover-img block h-full w-full object-cover object-top"
                       />
+                      {MUSIC_VIDEO_BY_TRACK_ID[track.id] ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Se musikvideo for ${track.title}`}
+                          title="Musikvideo"
+                          className="absolute left-3 top-3 z-[50] inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#7CFF6B] text-[#08132C] shadow-[0_0_18px_rgba(124,255,107,0.35)] transition hover:brightness-[1.03] active:brightness-[0.98]"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openMusicVideo(track.id);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key !== "Enter" && e.key !== " ") return;
+                            e.preventDefault();
+                            e.stopPropagation();
+                            openMusicVideo(track.id);
+                          }}
+                        >
+                          <TvMinimalPlay
+                            className="h-5 w-5"
+                            strokeWidth={2}
+                          />
+                        </span>
+                      ) : null}
                       <span
                         role="button"
                         tabIndex={0}
@@ -874,7 +1069,7 @@ export default function Page() {
                 id="info-dialog-title"
                 className="text-lg font-semibold text-white/95"
               >
-                Om LykkeLiga Jukebox
+                Om LykkeMusik
               </h2>
               <button
                 type="button"
@@ -886,8 +1081,8 @@ export default function Page() {
               </button>
             </div>
             <p className="mt-3 text-[15px] leading-relaxed text-white/75">
-              LykkeLiga Jukebox er en lille musikafspiller med sange fra
-              LykkeLiga. Vælg et nummer i karussellen, eller tænd for
+              LykkeMusik er en lille musikafspiller med sange fra LykkeLiga.
+              Vælg et nummer i karussellen, eller tænd for
               LykkeRadioen, så spiller den videre automatisk. God fornøjelse!
             </p>
             <button
@@ -910,10 +1105,10 @@ export default function Page() {
           <div
             role="dialog"
             aria-modal="true"
-            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-md"
+            className="flex max-h-[85dvh] w-full max-w-md flex-col overflow-hidden rounded-[22px] border border-white/20 bg-[#08132C]/96 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex shrink-0 items-start justify-between gap-3">
               <h2 className="text-lg font-semibold text-white/95">
                 {tracks.find((t) => t.id === lyricsTrackId)?.title ?? "Lyrics"}
               </h2>
@@ -927,20 +1122,86 @@ export default function Page() {
               </button>
             </div>
 
-            <pre className="mt-3 max-w-[38rem] whitespace-pre-wrap break-words bg-transparent text-[15px] leading-relaxed text-white/75">
-              {getLyrics(lyricsTrackId)}
-            </pre>
+            <div className="mt-3 min-h-0 flex-1 overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch]">
+              <pre className="max-w-[38rem] whitespace-pre-wrap break-words bg-transparent font-sans text-[15px] leading-relaxed text-white/75">
+                {getLyrics(lyricsTrackId)}
+              </pre>
+            </div>
 
             <button
               type="button"
               onClick={() => setLyricsOpen(false)}
-              className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
+              className="mt-5 w-full shrink-0 rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
             >
               Luk
             </button>
           </div>
         </div>
       )}
+
+      {videoOpen &&
+        videoTrackId &&
+        MUSIC_VIDEO_BY_TRACK_ID[videoTrackId] && (
+          <div
+            className="fixed inset-0 z-[655] flex items-center justify-center bg-[#08132C]/35 p-3 backdrop-blur-md sm:p-4"
+            role="presentation"
+            onClick={closeVideoModal}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="Musikvideo"
+              className="w-full max-w-lg overflow-hidden rounded-[22px] border border-white/20 bg-white/10 px-4 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.35)] backdrop-blur-md sm:max-w-xl sm:px-5"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h2 className="text-lg font-semibold leading-tight text-white/95">
+                    {tracks.find((t) => t.id === videoTrackId)?.title ??
+                      "Musikvideo"}
+                  </h2>
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7CFF6B]/90">
+                    Musikvideo
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeVideoModal}
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                  aria-label="Luk"
+                >
+                  <X className="h-5 w-5" strokeWidth={2} />
+                </button>
+              </div>
+
+              <div className="mt-4 overflow-hidden rounded-2xl border border-white/15 bg-black shadow-[0_12px_40px_rgba(0,0,0,0.45)] ring-1 ring-black/25">
+                <div className="relative aspect-video w-full">
+                  <iframe
+                    src={youtubeEmbedSrc(
+                      MUSIC_VIDEO_BY_TRACK_ID[videoTrackId],
+                    )}
+                    title={`Musikvideo: ${tracks.find((t) => t.id === videoTrackId)?.title ?? ""}`}
+                    className="absolute inset-0 h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+
+              <p className="mt-3 text-center text-[12px] leading-snug text-white/50">
+                Videoen afspilles her i appen.
+              </p>
+
+              <button
+                type="button"
+                onClick={closeVideoModal}
+                className="mt-4 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
+              >
+                Luk
+              </button>
+            </div>
+          </div>
+        )}
 
       {musicInfoOpen && (
         <div
@@ -1037,14 +1298,9 @@ export default function Page() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="flex flex-col gap-1">
-                <h2 className="text-lg font-semibold text-white/95">
-                  Gem som app
-                </h2>
-                <p className="text-[12px] font-medium text-white/70">
-                  Hurtig guide til iPhone
-                </p>
-              </div>
+              <h2 className="pr-2 text-lg font-semibold leading-snug text-white/95">
+                Sådan gemmer du LykkeMusik som app
+              </h2>
               <button
                 type="button"
                 onClick={() => setSaveAsAppOpen(false)}
@@ -1055,14 +1311,40 @@ export default function Page() {
               </button>
             </div>
 
-            <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-white/75">
-              <p>1. Aaben siden i Safari paa din iPhone.</p>
-              <p>
-                2. Tryk paa delingsikonet (firkant med pil op) nederst i
-                Safari.
-              </p>
-              <p>3. Vaelg "Add to Home Screen" / "Foj til hjemmeskarm".</p>
-              <p>4. Tryk "Add", og aaben appen fra hjemmeskarmen.</p>
+            <div className="mt-4 space-y-5 text-[15px] leading-relaxed text-white/75">
+              <div>
+                <p className="font-semibold text-white/90">iPhone (Safari)</p>
+                <ol className="mt-2 list-decimal space-y-1.5 pl-5 marker:text-white/55">
+                  <li>Åbn siden i Safari</li>
+                  <li>Tryk på Del-knappen</li>
+                  <li>Vælg “Føj til hjemmeskærm”</li>
+                  <li>Vælg “Gem som webapp”</li>
+                  <li>Tryk “Tilføj”</li>
+                </ol>
+              </div>
+
+              <div>
+                <p className="font-semibold text-white/90">Android (Chrome)</p>
+                <ol className="mt-2 list-decimal space-y-1.5 pl-5 marker:text-white/55">
+                  <li>Åbn siden i Chrome</li>
+                  <li>Tryk på menuen (de tre prikker)</li>
+                  <li>
+                    Vælg “Installér app” eller “Føj til startskærm”
+                  </li>
+                  <li>Tryk “Tilføj” eller “Installér”</li>
+                </ol>
+              </div>
+
+              <div className="rounded-xl border border-white/15 bg-white/[0.06] px-3 py-3">
+                <p className="text-[13px] font-semibold uppercase tracking-wide text-[#7CFF6B]/95">
+                  Tip
+                </p>
+                <p className="mt-2 text-[14px] leading-snug text-white/70">
+                  Åbn appen fra ikonet på hjemmeskærmen for at få fuldskærm uden
+                  browser. Hvis noget driller, kan du slette appen og tilføje den
+                  igen.
+                </p>
+              </div>
             </div>
 
             <button
@@ -1086,7 +1368,7 @@ export default function Page() {
               Drej tilbage til portræt
             </div>
             <div className="mt-2 text-[13px] leading-relaxed text-white/75">
-              LykkeLiga Jukebox er designet til at køre i lodret visning.
+              LykkeMusik er designet til at køre i lodret visning.
             </div>
           </div>
         </div>
