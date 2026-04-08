@@ -9,7 +9,7 @@ export default async function AdminPage() {
   const admin = createServiceSupabase();
   if (!admin) {
     return (
-      <div className="min-h-screen bg-[#050a14] px-6 py-16 text-center text-white/80">
+      <div className="min-h-screen bg-[#040814] px-6 py-16 text-center text-white/80">
         <p className="text-lg font-semibold">Supabase er ikke konfigureret</p>
         <p className="mt-2 text-sm text-white/55">
           Tilføj{" "}
@@ -26,7 +26,7 @@ export default async function AdminPage() {
   const { data: rows, error } = await admin.from("track_plays").select("track_id");
   if (error) {
     return (
-      <div className="min-h-screen bg-[#050a14] px-6 py-16 text-center text-red-300">
+      <div className="min-h-screen bg-[#040814] px-6 py-16 text-center text-red-300">
         <p className="font-semibold">Kunne ikke hente statistik</p>
         <p className="mt-2 text-sm opacity-80">{error.message}</p>
         <p className="mt-4 text-xs text-white/50">

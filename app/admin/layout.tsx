@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#050a14",
+  themeColor: "#040814",
 };
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#050a14] antialiased [color-scheme:dark]">
+    <div className="min-h-screen bg-[#040814] antialiased [color-scheme:dark]">
       {children}
     </div>
   );

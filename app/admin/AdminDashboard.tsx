@@ -1,4 +1,5 @@
 import type { Track } from "@/lib/tracks";
+import { Activity, BarChart3, Disc3, Music2, Trophy } from "lucide-react";
 
 export type StatRow = Track & { playCount: number; pct: number };
 
@@ -9,96 +10,282 @@ export function AdminDashboard({
   stats: StatRow[];
   totalPlays: number;
 }) {
+  const tracksWithPlays = stats.filter((s) => s.playCount > 0).length;
+  const topTrack = stats[0];
+  const topLabel =
+    topTrack && topTrack.playCount > 0
+      ? topTrack.title
+      : "Ingen afspilninger endnu";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#050a14] via-[#0b1735] to-[#08132c] text-white">
-      {/* Desktop-first: komfortabel læsebredde på stor skærm */}
-      <div className="mx-auto max-w-5xl px-8 py-10 lg:px-12 lg:py-12">
-        <header className="mb-8 border-b border-white/10 pb-8">
-          <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7CFF6B]/90">
-                LykkeMusik · admin
-              </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white/95 lg:text-4xl">
+    <div className="relative min-h-screen overflow-hidden bg-[#040814] text-white">
+      {/* Ambient layers */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(124,255,107,0.12),transparent_55%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_50%_at_100%_50%,rgba(59,130,246,0.08),transparent_50%)]"
+      />
+      <div
+        aria-hidden
+        className="fixed inset-0 opacity-[0.35] [background-image:linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:64px_64px]"
+      />
+
+      <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-10 sm:px-6 lg:px-10 lg:pb-16 lg:pt-14">
+        {/* Hero */}
+        <header className="mb-10 lg:mb-14">
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-10">
+            <div className="lg:col-span-7">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 backdrop-blur-md">
+                <BarChart3
+                  className="h-3.5 w-3.5 text-[#7CFF6B]"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
+                  LykkeMusik · admin
+                </span>
+              </div>
+
+              <h1 className="mt-5 text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-white sm:text-4xl lg:text-[2.75rem]">
                 Afspilningsstatistik
               </h1>
-              <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/50">
-                Oversigt over hvor ofte hvert nummer er startet (én tælling pr.
-                afspilningsstart pr. valgt sang).
+
+              <p className="mt-4 max-w-[34rem] text-[15px] leading-[1.65] text-white/48 sm:text-base">
+                Live overblik over, hvor ofte hvert nummer er blevet startet.
+                Hver gang en sang begynder at spille, tæller vi én gang for det
+                pågældende nummer — enkel og retvisende indsigt i jeres
+                LykkeMusik-brug.
               </p>
+
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-[13px] text-white/38">
+                <span className="inline-flex items-center gap-2">
+                  <Music2 className="h-4 w-4 text-[#7CFF6B]/70" strokeWidth={1.75} />
+                  {stats.length} numre i kataloget
+                </span>
+                <span className="hidden h-1 w-1 rounded-full bg-white/20 sm:inline" />
+                <span className="inline-flex items-center gap-2">
+                  <Disc3 className="h-4 w-4 text-[#7CFF6B]/70" strokeWidth={1.75} />
+                  Opdateret pr. sidevisning
+                </span>
+              </div>
             </div>
-            <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-4 text-center lg:mt-0 lg:text-right">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-white/45">
-                Total
-              </p>
-              <p className="mt-1 text-4xl font-semibold tabular-nums text-[#7CFF6B]">
-                {totalPlays}
-              </p>
-              <p className="text-xs text-white/40">afspilninger</p>
+
+            <div className="flex flex-col gap-4 lg:col-span-5">
+              {/* Primary KPI */}
+              <div className="relative overflow-hidden rounded-3xl border border-white/[0.1] bg-gradient-to-br from-white/[0.09] to-white/[0.02] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:p-7">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#7CFF6B]/15 blur-3xl"
+                />
+                <div className="relative flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/40">
+                      Total afspilninger
+                    </p>
+                    <p className="mt-3 text-5xl font-semibold tabular-nums tracking-tight text-white sm:text-6xl">
+                      {totalPlays}
+                    </p>
+                    <p className="mt-2 text-[13px] text-white/45">
+                      Alle starts siden målingen begyndte
+                    </p>
+                  </div>
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#7CFF6B]/25 bg-[#7CFF6B]/10 text-[#7CFF6B]">
+                    <Activity className="h-6 w-6" strokeWidth={1.75} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-4 backdrop-blur-md">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/38">
+                    Sange med afspilninger
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold tabular-nums text-white/95">
+                    {tracksWithPlays}
+                    <span className="text-base font-normal text-white/35">
+                      {" "}
+                      / {stats.length}
+                    </span>
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-4 backdrop-blur-md">
+                  <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/38">
+                    <Trophy className="h-3 w-3 text-[#7CFF6B]/80" strokeWidth={2} />
+                    Mest afspillet
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug text-white/88">
+                    {topLabel}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* Tabel: bedst på desktop; stadig brugbar på mindre vinduer */}
-        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.04] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-          <table className="w-full min-w-[640px] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-white/10 text-[11px] font-semibold uppercase tracking-wider text-white/45">
-                <th className="w-14 px-4 py-4 pl-5 lg:pl-6">#</th>
-                <th className="px-4 py-4">Titel</th>
-                <th className="hidden px-4 py-4 md:table-cell">Kunstner</th>
-                <th className="min-w-[200px] px-4 py-4 lg:min-w-[280px]">
-                  Andel
-                </th>
-                <th className="w-28 px-4 py-4 pr-5 text-right lg:w-32 lg:pr-6">
-                  Antal
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.map((row, i) => (
-                <tr
-                  key={row.id}
-                  className="border-b border-white/[0.06] transition hover:bg-white/[0.03]"
-                >
-                  <td className="px-4 py-4 pl-5 align-middle lg:pl-6">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#7CFF6B]/12 text-sm font-bold text-[#7CFF6B]">
-                      {i + 1}
-                    </span>
-                  </td>
-                  <td className="max-w-[14rem] px-4 py-4 align-middle lg:max-w-none">
-                    <span className="font-medium text-white/95">{row.title}</span>
-                  </td>
-                  <td className="hidden px-4 py-4 align-middle text-[15px] text-white/50 md:table-cell">
-                    {row.artist}
-                  </td>
-                  <td className="px-4 py-4 align-middle">
-                    <div className="flex items-center gap-3">
-                      <div className="h-2.5 min-w-[120px] flex-1 overflow-hidden rounded-full bg-white/10 lg:min-w-[200px]">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-[#5ae84d] to-[#7CFF6B]"
-                          style={{ width: `${row.pct}%` }}
-                        />
-                      </div>
-                      <span className="w-10 shrink-0 text-right text-xs tabular-nums text-white/40">
-                        {row.pct}%
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 pr-5 text-right align-middle lg:pr-6">
-                    <span className="text-xl font-semibold tabular-nums text-[#7CFF6B] lg:text-2xl">
-                      {row.playCount}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {/* Desktop / tablet table */}
+        <section
+          className="hidden overflow-hidden rounded-[1.75rem] border border-white/[0.09] bg-white/[0.04] shadow-[0_32px_120px_rgba(0,0,0,0.5)] backdrop-blur-xl md:block"
+          aria-label="Afspilninger pr. nummer"
+        >
+          <div className="flex flex-col gap-1 border-b border-white/[0.06] px-6 py-5 sm:px-8 sm:py-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-white/95">
+                Alle numre
+              </h2>
+              <p className="mt-1 text-[13px] text-white/40">
+                Rangeret efter antal afspilninger
+              </p>
+            </div>
+          </div>
 
-        <p className="mt-8 text-[13px] leading-relaxed text-white/35">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px] border-collapse text-left">
+              <thead>
+                <tr className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/38">
+                  <th className="w-16 px-6 py-4 pl-8 lg:pl-10">#</th>
+                  <th className="px-4 py-4">Titel</th>
+                  <th className="hidden w-[22%] px-4 py-4 lg:table-cell">Kunstner</th>
+                  <th className="min-w-[220px] px-4 py-4 xl:min-w-[280px]">
+                    Andel
+                  </th>
+                  <th className="w-32 px-6 py-4 pr-8 text-right tabular-nums lg:pr-10">
+                    Antal
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.map((row, i) => {
+                  const isTop = i === 0 && row.playCount > 0;
+                  return (
+                    <tr
+                      key={row.id}
+                      className={[
+                        "group border-t border-white/[0.05] transition-colors duration-200",
+                        isTop
+                          ? "bg-gradient-to-r from-[#7CFF6B]/[0.07] via-transparent to-transparent"
+                          : "hover:bg-white/[0.03]",
+                      ].join(" ")}
+                    >
+                      <td className="px-6 py-5 pl-8 align-middle lg:pl-10">
+                        <span
+                          className={[
+                            "inline-flex h-9 min-w-[2.25rem] items-center justify-center rounded-xl text-sm font-semibold tabular-nums",
+                            isTop
+                              ? "border border-[#7CFF6B]/30 bg-[#7CFF6B]/15 text-[#7CFF6B] shadow-[0_0_20px_rgba(124,255,107,0.12)]"
+                              : "border border-white/[0.06] bg-white/[0.04] text-white/55",
+                          ].join(" ")}
+                        >
+                          {i + 1}
+                        </span>
+                      </td>
+                      <td className="max-w-[12rem] px-4 py-5 align-middle font-medium text-white/95 lg:max-w-none">
+                        {row.title}
+                      </td>
+                      <td className="hidden px-4 py-5 align-middle text-[14px] text-white/42 lg:table-cell">
+                        {row.artist}
+                      </td>
+                      <td className="px-4 py-5 align-middle">
+                        <div className="flex items-center gap-3 lg:gap-4">
+                          <div className="relative h-1.5 min-w-[100px] flex-1 overflow-hidden rounded-full bg-white/[0.07] lg:min-w-[160px]">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-[#5fd94f] via-[#7CFF6B] to-[#b4ff9e] shadow-[0_0_14px_rgba(124,255,107,0.28)] transition-[width] duration-500 ease-out"
+                              style={{ width: `${row.pct}%` }}
+                            />
+                          </div>
+                          <span className="w-11 shrink-0 text-right text-[11px] font-medium tabular-nums text-white/45">
+                            {row.pct}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5 pr-8 text-right align-middle lg:pr-10">
+                        <span
+                          className={[
+                            "text-xl font-semibold tabular-nums lg:text-2xl",
+                            row.playCount > 0 ? "text-[#7CFF6B]" : "text-white/25",
+                          ].join(" ")}
+                        >
+                          {row.playCount}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Mobile: stacked cards */}
+        <section
+          className="space-y-3 md:hidden"
+          aria-label="Afspilninger pr. nummer"
+        >
+          <div className="mb-4 px-1">
+            <h2 className="text-lg font-semibold tracking-tight text-white/95">
+              Alle numre
+            </h2>
+            <p className="mt-1 text-[13px] text-white/40">
+              Rangeret efter antal afspilninger
+            </p>
+          </div>
+          {stats.map((row, i) => {
+            const isTop = i === 0 && row.playCount > 0;
+            return (
+              <article
+                key={row.id}
+                className={[
+                  "rounded-2xl border p-4 backdrop-blur-md transition-shadow duration-200",
+                  isTop
+                    ? "border-[#7CFF6B]/25 bg-gradient-to-br from-[#7CFF6B]/[0.1] to-white/[0.04] shadow-[0_0_32px_rgba(124,255,107,0.08)]"
+                    : "border-white/[0.08] bg-white/[0.04] active:bg-white/[0.06]",
+                ].join(" ")}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span
+                    className={[
+                      "inline-flex h-8 min-w-[2rem] items-center justify-center rounded-lg text-xs font-semibold tabular-nums",
+                      isTop
+                        ? "bg-[#7CFF6B]/20 text-[#7CFF6B]"
+                        : "bg-white/[0.06] text-white/50",
+                    ].join(" ")}
+                  >
+                    {i + 1}
+                  </span>
+                  <span
+                    className={[
+                      "text-2xl font-semibold tabular-nums",
+                      row.playCount > 0 ? "text-[#7CFF6B]" : "text-white/25",
+                    ].join(" ")}
+                  >
+                    {row.playCount}
+                  </span>
+                </div>
+                <h3 className="mt-3 text-[15px] font-semibold leading-snug text-white/95">
+                  {row.title}
+                </h3>
+                <p className="mt-1 text-[13px] text-white/42">{row.artist}</p>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="relative h-1.5 min-h-[6px] flex-1 overflow-hidden rounded-full bg-white/[0.07]">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#5fd94f] via-[#7CFF6B] to-[#b4ff9e] shadow-[0_0_12px_rgba(124,255,107,0.25)]"
+                      style={{ width: `${row.pct}%` }}
+                    />
+                  </div>
+                  <span className="shrink-0 text-[11px] font-medium tabular-nums text-white/45">
+                    {row.pct}%
+                  </span>
+                </div>
+              </article>
+            );
+          })}
+        </section>
+
+        <p className="mt-10 max-w-lg text-[13px] leading-relaxed text-white/32">
           Tip: Gem{" "}
-          <code className="rounded bg-white/10 px-1.5 py-0.5 text-[12px] text-white/60">
+          <code className="rounded-md border border-white/[0.08] bg-white/[0.06] px-2 py-0.5 text-[12px] text-white/55">
             /admin
           </code>{" "}
           som bogmærke på din computer.

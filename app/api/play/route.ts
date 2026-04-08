@@ -53,6 +53,33 @@ export async function GET() {
     );
   }
 
+  const rolePeek = getApiPlaySupabaseDebug(admin).serviceKeyJwtRole;
+  if (rolePeek === "anon" || rolePeek === "authenticated") {
+    return NextResponse.json(
+      withDebug(admin, {
+        ok: false,
+        step: "wrong_key_in_service_role_env",
+        hint:
+          rolePeek === "anon"
+            ? "Vercel variablen SUPABASE_SERVICE_ROLE_KEY indeholder anon (public) nøglen — ikke service_role. Supabase Dashboard → Project Settings → Data API → kopier 'service_role' secret (JWT der starter med eyJ…), erstat værdien i Vercel, og redeploy. Anon-nøglen må kun ligge i NEXT_PUBLIC_SUPABASE_ANON_KEY hvis du bruger den i browser."
+            : "SUPABASE_SERVICE_ROLE_KEY ser ud til at være en authenticated-bruger JWT, ikke service_role. Brug service_role secret fra Supabase API-indstillinger.",
+      }),
+      { status: 200 },
+    );
+  }
+
+  if (rolePeek === "not_jwt") {
+    return NextResponse.json(
+      withDebug(admin, {
+        ok: false,
+        step: "service_key_not_legacy_jwt",
+        hint:
+          "Nøglen i SUPABASE_SERVICE_ROLE_KEY er ikke et klassisk JWT (eyJ…). supabase-js forventer stadig service_role JWT fra Dashboard → Data API / API (Legacy). Kopier den lange eyJ… service_role værdi til Vercel, eller opgrader klient/konfiguration til nye API-nøgler når det understøttes.",
+      }),
+      { status: 200 },
+    );
+  }
+
   const { error: readError, count } = await admin
     .from("track_plays")
     .select("*", { count: "exact", head: true });
