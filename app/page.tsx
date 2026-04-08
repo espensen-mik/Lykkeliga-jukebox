@@ -1251,7 +1251,7 @@ export default function Page() {
         </div>
       )}
 
-      {isLandscape && (
+      {isLandscape && !videoOpen && (
         <div
           className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/35 p-4"
           role="presentation"
