@@ -152,7 +152,8 @@ export function AdminDashboard({
                 Alle numre
               </h2>
               <p className="mt-1 text-[13px] text-white/40">
-                Rangeret efter antal afspilninger
+                Rangeret efter antal afspilninger. Andel = sangens del af alle
+                afspilninger i alt.
               </p>
             </div>
           </div>
@@ -244,7 +245,7 @@ export function AdminDashboard({
               Alle numre
             </h2>
             <p className="mt-1 text-[13px] text-white/40">
-              Rangeret efter antal afspilninger
+              Rangeret efter antal. Andel = del af alle afspilninger i alt.
             </p>
           </div>
           {stats.map((row, i) => {

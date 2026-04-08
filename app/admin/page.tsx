@@ -46,15 +46,18 @@ export default async function AdminPage() {
   }
 
   const totalPlays = [...counts.values()].reduce((a, b) => a + b, 0);
-  const maxCount = Math.max(1, ...tracks.map((t) => counts.get(t.id) ?? 0));
 
   const stats: StatRow[] = tracks
     .map((t) => {
       const playCount = counts.get(t.id) ?? 0;
+      const pct =
+        totalPlays > 0
+          ? Math.round((playCount / totalPlays) * 100)
+          : 0;
       return {
         ...t,
         playCount,
-        pct: Math.round((playCount / maxCount) * 100),
+        pct,
       };
     })
     .sort((a, b) => b.playCount - a.playCount);
