@@ -3,6 +3,98 @@ import { TRACK_IDS } from "@/lib/tracks";
 import { createServiceSupabase } from "@/lib/supabase/service";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/**
+ * GET = diagnostik (ingen hemmeligheder). Åbn i browser:
+ * https://dit-domæne.dk/api/play
+ */
+export async function GET() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  const hasUrl = Boolean(url);
+  const hasKey = Boolean(key);
+
+  if (!hasUrl || !hasKey) {
+    return NextResponse.json(
+      {
+        ok: false,
+        step: "env",
+        hasUrl,
+        hasKey,
+        hint: "Sæt NEXT_PUBLIC_SUPABASE_URL og SUPABASE_SERVICE_ROLE_KEY i Vercel → Environment Variables og redeploy.",
+      },
+      { status: 200 },
+    );
+  }
+
+  const admin = createServiceSupabase();
+  if (!admin) {
+    return NextResponse.json(
+      { ok: false, step: "client", hint: "createServiceSupabase returnerede null" },
+      { status: 200 },
+    );
+  }
+
+  const { error: readError, count } = await admin
+    .from("track_plays")
+    .select("*", { count: "exact", head: true });
+
+  if (readError) {
+    return NextResponse.json(
+      {
+        ok: false,
+        step: "read_track_plays",
+        supabaseError: readError.message,
+        code: readError.code,
+        hint:
+          "Tjek at tabellen hedder track_plays i schema public, og at service_role har adgang. Kør evt. supabase/migrations/002_track_plays_grants.sql i SQL Editor.",
+      },
+      { status: 200 },
+    );
+  }
+
+  let cleanupId: string | undefined;
+  try {
+    const inserted = await admin
+      .from("track_plays")
+      .insert({ track_id: "hop-hop-hop" })
+      .select("id")
+      .single();
+
+    if (inserted.error) {
+      return NextResponse.json(
+        {
+          ok: false,
+          step: "insert_test",
+          supabaseError: inserted.error.message,
+          code: inserted.error.code,
+          details: inserted.error.details,
+          rowCount: count ?? 0,
+          hint:
+            "Kør SQL fra supabase/migrations/002_track_plays_grants.sql i Supabase SQL Editor.",
+        },
+        { status: 200 },
+      );
+    }
+
+    cleanupId = inserted.data?.id;
+
+    return NextResponse.json({
+      ok: true,
+      step: "full",
+      rowCount: count ?? 0,
+      insertDeleteTest: "passed",
+      serviceKeyLooksLikeJwt: Boolean(key?.startsWith("eyJ")),
+      message:
+        "Supabase er OK fra Vercel. Spil musik og tjek Network → POST /api/play (status 200).",
+    });
+  } finally {
+    if (cleanupId) {
+      await admin.from("track_plays").delete().eq("id", cleanupId);
+    }
+  }
+}
 
 export async function POST(req: Request) {
   const admin = createServiceSupabase();
@@ -10,14 +102,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, reason: "not_configured" }, { status: 503 });
   }
 
-  let body: { trackId?: string };
+  let body: { track_id?: string; trackId?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const trackId = body.trackId;
+  const trackId =
+    typeof body.track_id === "string" ? body.track_id : body.trackId;
   if (!trackId || typeof trackId !== "string" || !TRACK_IDS.has(trackId)) {
     return NextResponse.json({ error: "Unknown track" }, { status: 400 });
   }

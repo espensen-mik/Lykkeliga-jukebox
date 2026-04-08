@@ -1,6 +1,7 @@
 "use client";
 
 import React, {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -9,7 +10,6 @@ import React, {
 } from "react";
 import { createPortal } from "react-dom";
 import { MicVocal, Menu, Radio, TvMinimalPlay, X } from "lucide-react";
-import { recordPlay } from "@/lib/record-play";
 import { tracks } from "@/lib/tracks";
 
 const lyricsByTrackId: Record<string, string> = {
@@ -315,11 +315,37 @@ function ControlButton({
   );
 }
 
+function recordPlay(trackId: string): void {
+  console.log("[play-stats] recordPlay", trackId);
+  void fetch("/api/play", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ track_id: trackId }),
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        let detail = "";
+        try {
+          detail = await res.text();
+        } catch {
+          /* ignore */
+        }
+        console.error("[play-stats] POST /api/play failed", res.status, detail);
+      }
+    })
+    .catch((err) => {
+      console.error("[play-stats] POST /api/play error", err);
+    });
+}
+
 export default function Page() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stripRef = useRef<HTMLDivElement | null>(null);
   const suppressCoverClickRef = useRef<number>(0);
-  const playRecordedForTrackRef = useRef(false);
+  const hasRecordedPlayRef = useRef(false);
+  const indexRef = useRef(0);
+  const playingRef = useRef(false);
+  const lastLoadedIndexRef = useRef<number | null>(null);
 
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -343,6 +369,28 @@ export default function Page() {
     right: number;
   }>({ top: 0, right: 16 });
   const [mounted, setMounted] = useState(false);
+
+  indexRef.current = index;
+  playingRef.current = playing;
+
+  const markPlaybackStartedAndRecord = useCallback((trackId: string) => {
+    if (hasRecordedPlayRef.current) return;
+    hasRecordedPlayRef.current = true;
+    recordPlay(trackId);
+  }, []);
+
+  const playCurrentAudioAndRecord = useCallback(async (): Promise<boolean> => {
+    const audio = audioRef.current;
+    if (!audio) return false;
+    const trackId = tracks[indexRef.current].id;
+    try {
+      await audio.play();
+      markPlaybackStartedAndRecord(trackId);
+      return true;
+    } catch {
+      return false;
+    }
+  }, [markPlaybackStartedAndRecord]);
 
   useEffect(() => {
     setMounted(true);
@@ -426,28 +474,21 @@ export default function Page() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    playRecordedForTrackRef.current = false;
+    if (lastLoadedIndexRef.current !== index) {
+      hasRecordedPlayRef.current = false;
+      lastLoadedIndexRef.current = index;
+    }
 
-    const onPlaying = () => {
-      if (playRecordedForTrackRef.current) return;
-      playRecordedForTrackRef.current = true;
-      recordPlay(tracks[index].id);
-    };
-
-    audio.addEventListener("playing", onPlaying);
-
-    audio.src = current.audioUrl;
+    audio.src = tracks[index].audioUrl;
     audio.load();
     setTime(0);
 
-    if (playing) {
-      void audio.play().catch(() => setPlaying(false));
+    if (playingRef.current) {
+      void playCurrentAudioAndRecord().then((ok) => {
+        if (!ok) setPlaying(false);
+      });
     }
-
-    return () => {
-      audio.removeEventListener("playing", onPlaying);
-    };
-  }, [index]);
+  }, [index, playCurrentAudioAndRecord]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -460,6 +501,7 @@ export default function Page() {
         setIndex((prev) => (prev + 1) % tracks.length);
         setPlaying(true);
       } else {
+        hasRecordedPlayRef.current = false;
         setPlaying(false);
       }
     };
@@ -528,14 +570,9 @@ export default function Page() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Use the real audio state to avoid React state drifting.
     if (audio.paused) {
-      try {
-        await audio.play();
-        setPlaying(true);
-      } catch {
-        setPlaying(false);
-      }
+      const ok = await playCurrentAudioAndRecord();
+      setPlaying(ok);
     } else {
       audio.pause();
       setPlaying(false);
@@ -563,12 +600,8 @@ export default function Page() {
     setRadioMode(nextMode);
 
     if (!playing && audio) {
-      try {
-        await audio.play();
-        setPlaying(true);
-      } catch {
-        setPlaying(false);
-      }
+      const ok = await playCurrentAudioAndRecord();
+      setPlaying(ok);
     }
   };
 

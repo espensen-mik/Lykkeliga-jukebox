@@ -2,37 +2,37 @@
   "pages": {
     "/_not-found/page": [
       "static/chunks/webpack-889906d2d9470bce.js",
-      "static/chunks/fd9d1056-6bdd024b9626e819.js",
-      "static/chunks/23-5a1383f33849d293.js",
+      "static/chunks/fd9d1056-71e58221a83957e6.js",
+      "static/chunks/23-b36614030938df6d.js",
       "static/chunks/main-app-b6e634d7f105709a.js",
-      "static/chunks/app/_not-found/page-ae66fe422748b4aa.js"
+      "static/chunks/app/_not-found/page-01d24eaa530a7d22.js"
     ],
     "/layout": [
       "static/chunks/webpack-889906d2d9470bce.js",
-      "static/chunks/fd9d1056-6bdd024b9626e819.js",
-      "static/chunks/23-5a1383f33849d293.js",
+      "static/chunks/fd9d1056-71e58221a83957e6.js",
+      "static/chunks/23-b36614030938df6d.js",
       "static/chunks/main-app-b6e634d7f105709a.js",
       "static/css/3de4116c9602cb6a.css",
       "static/chunks/app/layout-81b570a186f830e7.js"
     ],
     "/page": [
       "static/chunks/webpack-889906d2d9470bce.js",
-      "static/chunks/fd9d1056-6bdd024b9626e819.js",
-      "static/chunks/23-5a1383f33849d293.js",
+      "static/chunks/fd9d1056-71e58221a83957e6.js",
+      "static/chunks/23-b36614030938df6d.js",
       "static/chunks/main-app-b6e634d7f105709a.js",
-      "static/chunks/app/page-86c3e7d1a7d39f58.js"
+      "static/chunks/app/page-96ac9c4034f3c724.js"
     ],
     "/admin/page": [
       "static/chunks/webpack-889906d2d9470bce.js",
-      "static/chunks/fd9d1056-6bdd024b9626e819.js",
-      "static/chunks/23-5a1383f33849d293.js",
+      "static/chunks/fd9d1056-71e58221a83957e6.js",
+      "static/chunks/23-b36614030938df6d.js",
       "static/chunks/main-app-b6e634d7f105709a.js",
       "static/chunks/app/admin/page-1578db9df91adb5a.js"
     ],
     "/admin/layout": [
       "static/chunks/webpack-889906d2d9470bce.js",
-      "static/chunks/fd9d1056-6bdd024b9626e819.js",
-      "static/chunks/23-5a1383f33849d293.js",
+      "static/chunks/fd9d1056-71e58221a83957e6.js",
+      "static/chunks/23-b36614030938df6d.js",
       "static/chunks/main-app-b6e634d7f105709a.js",
       "static/chunks/app/admin/layout-54553b9f3ef40d18.js"
     ]
