@@ -422,13 +422,27 @@ export default function Page() {
     const audio = audioRef.current;
     if (!audio) return;
 
+    playRecordedForTrackRef.current = false;
+
+    const onPlaying = () => {
+      if (playRecordedForTrackRef.current) return;
+      playRecordedForTrackRef.current = true;
+      recordPlay(tracks[index].id);
+    };
+
+    audio.addEventListener("playing", onPlaying);
+
     audio.src = current.audioUrl;
     audio.load();
     setTime(0);
 
     if (playing) {
-      audio.play().catch(() => setPlaying(false));
+      void audio.play().catch(() => setPlaying(false));
     }
+
+    return () => {
+      audio.removeEventListener("playing", onPlaying);
+    };
   }, [index]);
 
   useEffect(() => {
@@ -465,19 +479,6 @@ export default function Page() {
 
     const left = card.offsetLeft - (strip.clientWidth - card.clientWidth) / 2;
     strip.scrollTo({ left, behavior: "smooth" });
-  }, [index]);
-
-  useEffect(() => {
-    playRecordedForTrackRef.current = false;
-    const audio = audioRef.current;
-    if (!audio) return;
-    const onPlaying = () => {
-      if (playRecordedForTrackRef.current) return;
-      playRecordedForTrackRef.current = true;
-      recordPlay(tracks[index].id);
-    };
-    audio.addEventListener("playing", onPlaying);
-    return () => audio.removeEventListener("playing", onPlaying);
   }, [index]);
 
   useEffect(() => {

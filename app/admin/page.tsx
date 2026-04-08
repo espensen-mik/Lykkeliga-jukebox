@@ -2,6 +2,9 @@ import { tracks } from "@/lib/tracks";
 import { createServiceSupabase } from "@/lib/supabase/service";
 import { AdminDashboard, type StatRow } from "./AdminDashboard";
 
+/** Altid server-render: miljøvariabler skal læses ved request (fx Vercel), ikke ved statisk build. */
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const admin = createServiceSupabase();
   if (!admin) {
@@ -11,8 +14,10 @@ export default async function AdminPage() {
         <p className="mt-2 text-sm text-white/55">
           Tilføj{" "}
           <code className="rounded bg-white/10 px-1">NEXT_PUBLIC_SUPABASE_URL</code> og{" "}
-          <code className="rounded bg-white/10 px-1">SUPABASE_SERVICE_ROLE_KEY</code> i{" "}
-          <code className="rounded bg-white/10 px-1">.env.local</code>.
+          <code className="rounded bg-white/10 px-1">SUPABASE_SERVICE_ROLE_KEY</code> i
+          miljøvariabler (lokalt: <code className="rounded bg-white/10 px-1">.env.local</code>
+          , på Vercel: Project → Settings → Environment Variables). Tjek at URL&apos;en er
+          kopieret korrekt tegn for tegn.
         </p>
       </div>
     );

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { TRACK_IDS } from "@/lib/tracks";
 import { createServiceSupabase } from "@/lib/supabase/service";
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   const admin = createServiceSupabase();
   if (!admin) {

@@ -4,11 +4,12 @@
  */
 export function recordPlay(trackId: string): void {
   if (typeof window === "undefined") return;
-  void fetch("/api/play", {
+  const url = `${window.location.origin}/api/play`;
+  void fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ trackId }),
-    keepalive: true,
+    credentials: "same-origin",
   }).catch(() => {
     /* ignore */
   });
