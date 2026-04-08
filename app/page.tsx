@@ -431,7 +431,6 @@ export default function Page() {
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [infoOpen, setInfoOpen] = useState(false);
   const [musicInfoOpen, setMusicInfoOpen] = useState(false);
   const [saveAsAppOpen, setSaveAsAppOpen] = useState(false);
   const [lyricsOpen, setLyricsOpen] = useState(false);
@@ -573,15 +572,6 @@ export default function Page() {
   }, [index]);
 
   useEffect(() => {
-    if (!infoOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setInfoOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [infoOpen]);
-
-  useEffect(() => {
     if (!lyricsOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setLyricsOpen(false);
@@ -619,29 +609,6 @@ export default function Page() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [saveAsAppOpen]);
-
-  const shareApp = async () => {
-    const url =
-      typeof window !== "undefined" ? window.location.href : "";
-    if (!url) return;
-    setMenuOpen(false);
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "LykkeMusik",
-          text: "LykkeMusik",
-          url,
-        });
-      } else if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-        window.alert("Linket er kopieret — du kan indsætte det, hvor du vil.");
-      } else {
-        window.prompt("Kopiér linket:", url);
-      }
-    } catch {
-      /* user cancelled share or error */
-    }
-  };
 
   const togglePlay = async () => {
     const audio = audioRef.current;
@@ -1001,17 +968,6 @@ export default function Page() {
                 className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={() => {
                   setMenuOpen(false);
-                  setInfoOpen(true);
-                }}
-              >
-                Info
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
-                onClick={() => {
-                  setMenuOpen(false);
                   setMusicInfoOpen(true);
                 }}
               >
@@ -1028,73 +984,10 @@ export default function Page() {
               >
                 Gem som app
               </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
-                onClick={shareApp}
-              >
-                Del
-              </button>
-              <a
-                role="menuitem"
-                href="https://lykkeliga.dk"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block px-4 py-2.5 text-[15px] font-medium text-white/90 transition hover:bg-white/10"
-                onClick={() => setMenuOpen(false)}
-              >
-                lykkeliga.dk
-              </a>
             </div>
           </>,
           document.body
         )}
-
-      {infoOpen && (
-        <div
-          className="fixed inset-0 z-[600] flex items-end justify-center bg-[#08132C]/35 p-4 backdrop-blur-xl sm:items-center"
-          role="presentation"
-          onClick={() => setInfoOpen(false)}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="info-dialog-title"
-            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <h2
-                id="info-dialog-title"
-                className="text-lg font-semibold text-white/95"
-              >
-                Om LykkeMusik
-              </h2>
-              <button
-                type="button"
-                onClick={() => setInfoOpen(false)}
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
-                aria-label="Luk"
-              >
-                <X className="h-5 w-5" strokeWidth={2} />
-              </button>
-            </div>
-            <p className="mt-3 text-[15px] leading-relaxed text-white/75">
-              LykkeMusik er en lille musikafspiller med sange fra LykkeLiga.
-              Vælg et nummer i karussellen, eller tænd for
-              LykkeRadioen, så spiller den videre automatisk. God fornøjelse!
-            </p>
-            <button
-              type="button"
-              onClick={() => setInfoOpen(false)}
-              className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
-            >
-              Luk
-            </button>
-          </div>
-        </div>
-      )}
 
       {lyricsOpen && (
         <div
