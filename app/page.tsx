@@ -334,6 +334,8 @@ export default function Page() {
   const [videoOpen, setVideoOpen] = useState(false);
   const [videoTrackId, setVideoTrackId] = useState<string>("");
   const [isLandscape, setIsLandscape] = useState(false);
+  /** Til portræt-påmindelse: kun på “telefon/tablet”-bredder, ikke på desktop-browser */
+  const [viewportWidth, setViewportWidth] = useState(0);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuDropdownPos, setMenuDropdownPos] = useState<{
@@ -350,7 +352,9 @@ export default function Page() {
     // Best-effort orientation lock for iOS web-app mode.
     // Note: browsers typically require a user gesture; we try on mount and on first tap.
     const updateLandscape = () => {
-      setIsLandscape(window.innerWidth > window.innerHeight);
+      const w = window.innerWidth;
+      setViewportWidth(w);
+      setIsLandscape(w > window.innerHeight);
     };
 
     updateLandscape();
@@ -599,12 +603,15 @@ export default function Page() {
     setTime(nextTime);
   };
 
+  const showRotateToPortrait =
+    isLandscape && !videoOpen && viewportWidth > 0 && viewportWidth < 1024;
+
   return (
-    <main className="h-[100dvh] overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900">
+    <main className="h-[100dvh] overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900 lg:bg-[#ebe3d6]">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
-      <div className="flex h-full min-h-0 flex-col">
-        <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7">
+      <div className="flex h-full min-h-0 flex-col lg:mx-auto lg:max-w-5xl lg:shadow-[0_0_0_1px_rgba(11,27,70,0.06)]">
+        <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7 lg:px-10 lg:pt-9">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
               LykkeMusik
@@ -623,8 +630,8 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="relative z-0 mt-5 flex flex-col items-center gap-3 px-5">
-            <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2">
+          <div className="relative z-0 mt-5 flex flex-col items-center gap-3 px-5 lg:mt-6">
+            <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:max-w-lg">
               <div className="flex items-center gap-2">
                 <Radio
                   className="h-6 w-6 shrink-0 text-[#0B1B46]"
@@ -651,10 +658,10 @@ export default function Page() {
           </div>
         </header>
 
-        <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center overflow-hidden pt-4">
+        <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center overflow-hidden pt-4 lg:pt-6">
           <div
             ref={stripRef}
-            className="juke-carousel-strip scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-[11vw] pb-3"
+            className="juke-carousel-strip scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-[11vw] pb-3 lg:gap-5 lg:px-10 lg:pb-5"
           >
             {tracks.map((track, i) => {
               const active = i === index;
@@ -664,7 +671,7 @@ export default function Page() {
                   key={track.id}
                   data-index={i}
                   onClick={() => selectTrack(i)}
-                  className="flex w-[68vw] max-w-[300px] shrink-0 snap-center flex-col text-left"
+                  className="flex w-[68vw] max-w-[300px] shrink-0 snap-center flex-col text-left lg:w-64 lg:max-w-none"
                 >
                   <div
                     className={[
@@ -746,10 +753,10 @@ export default function Page() {
         </section>
 
         <div
-          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white [padding-bottom:env(safe-area-inset-bottom,0px)]"
+          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white [padding-bottom:env(safe-area-inset-bottom,0px)] lg:rounded-t-2xl lg:border lg:border-white/10 lg:border-b-0 lg:shadow-[0_-8px_40px_rgba(0,0,0,0.12)]"
           aria-label="Afspiller"
         >
-          <div className="mx-auto max-w-6xl px-4 py-3">
+          <div className="mx-auto max-w-6xl px-4 py-3 lg:px-6 lg:py-4">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -1161,7 +1168,7 @@ export default function Page() {
         </div>
       )}
 
-      {isLandscape && !videoOpen && (
+      {showRotateToPortrait && (
         <div
           className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/35 p-4"
           role="presentation"
