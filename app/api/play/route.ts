@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server";
 import { TRACK_IDS } from "@/lib/tracks";
-import { createServiceSupabase } from "@/lib/supabase/service";
+import {
+  createServiceSupabase,
+  getApiPlaySupabaseDebug,
+} from "@/lib/supabase/service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+function withDebug<T extends Record<string, unknown>>(
+  admin: ReturnType<typeof createServiceSupabase>,
+  body: T,
+): T & ReturnType<typeof getApiPlaySupabaseDebug> {
+  const debug = getApiPlaySupabaseDebug(admin);
+  console.log("[api/play] debug", debug);
+  return { ...body, ...debug };
+}
 
 /**
  * GET = diagnostik (ingen hemmeligheder). Åbn i browser:
@@ -15,23 +27,28 @@ export async function GET() {
   const hasUrl = Boolean(url);
   const hasKey = Boolean(key);
 
+  const admin = createServiceSupabase();
+
   if (!hasUrl || !hasKey) {
     return NextResponse.json(
-      {
+      withDebug(admin, {
         ok: false,
         step: "env",
         hasUrl,
         hasKey,
         hint: "Sæt NEXT_PUBLIC_SUPABASE_URL og SUPABASE_SERVICE_ROLE_KEY i Vercel → Environment Variables og redeploy.",
-      },
+      }),
       { status: 200 },
     );
   }
 
-  const admin = createServiceSupabase();
   if (!admin) {
     return NextResponse.json(
-      { ok: false, step: "client", hint: "createServiceSupabase returnerede null" },
+      withDebug(null, {
+        ok: false,
+        step: "client",
+        hint: "createServiceSupabase returnerede null",
+      }),
       { status: 200 },
     );
   }
@@ -42,14 +59,14 @@ export async function GET() {
 
   if (readError) {
     return NextResponse.json(
-      {
+      withDebug(admin, {
         ok: false,
         step: "read_track_plays",
         supabaseError: readError.message,
         code: readError.code,
         hint:
           "Tjek at tabellen hedder track_plays i schema public, og at service_role har adgang. Kør evt. supabase/migrations/002_track_plays_grants.sql i SQL Editor.",
-      },
+      }),
       { status: 200 },
     );
   }
@@ -64,7 +81,7 @@ export async function GET() {
 
     if (inserted.error) {
       return NextResponse.json(
-        {
+        withDebug(admin, {
           ok: false,
           step: "insert_test",
           supabaseError: inserted.error.message,
@@ -72,23 +89,24 @@ export async function GET() {
           details: inserted.error.details,
           rowCount: count ?? 0,
           hint:
-            "Kør SQL fra supabase/migrations/002_track_plays_grants.sql i Supabase SQL Editor.",
-        },
+            "Hvis serviceKeyJwtRole ikke er service_role, sæt den rigtige service_role JWT i Vercel (eyJ…). Ellers kør supabase/migrations/002_track_plays_grants.sql.",
+        }),
         { status: 200 },
       );
     }
 
     cleanupId = inserted.data?.id;
 
-    return NextResponse.json({
-      ok: true,
-      step: "full",
-      rowCount: count ?? 0,
-      insertDeleteTest: "passed",
-      serviceKeyLooksLikeJwt: Boolean(key?.startsWith("eyJ")),
-      message:
-        "Supabase er OK fra Vercel. Spil musik og tjek Network → POST /api/play (status 200).",
-    });
+    return NextResponse.json(
+      withDebug(admin, {
+        ok: true,
+        step: "full",
+        rowCount: count ?? 0,
+        insertDeleteTest: "passed",
+        message:
+          "Supabase er OK fra Vercel. Spil musik og tjek Network → POST /api/play (status 200).",
+      }),
+    );
   } finally {
     if (cleanupId) {
       await admin.from("track_plays").delete().eq("id", cleanupId);
@@ -98,28 +116,40 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const admin = createServiceSupabase();
+  const debug = getApiPlaySupabaseDebug(admin);
+  console.log("[api/play] POST debug", debug);
+
   if (!admin) {
-    return NextResponse.json({ ok: false, reason: "not_configured" }, { status: 503 });
+    return NextResponse.json(
+      { ok: false, reason: "not_configured", ...debug },
+      { status: 503 },
+    );
   }
 
   let body: { track_id?: string; trackId?: string };
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid JSON", ...debug },
+      { status: 400 },
+    );
   }
 
   const trackId =
     typeof body.track_id === "string" ? body.track_id : body.trackId;
   if (!trackId || typeof trackId !== "string" || !TRACK_IDS.has(trackId)) {
-    return NextResponse.json({ error: "Unknown track" }, { status: 400 });
+    return NextResponse.json({ error: "Unknown track", ...debug }, { status: 400 });
   }
 
   const { error } = await admin.from("track_plays").insert({ track_id: trackId });
   if (error) {
     console.error("[api/play]", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message, ...debug },
+      { status: 500 },
+    );
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, ...debug });
 }
