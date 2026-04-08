@@ -4,6 +4,9 @@ import { AdminDashboard, type StatRow } from "./AdminDashboard";
 
 /** Altid server-render: miljøvariabler skal læses ved request (fx Vercel), ikke ved statisk build. */
 export const dynamic = "force-dynamic";
+/** Undgå at Next.js cacher Supabase-fetch i denne route (sammen med no-store i createServiceSupabase). */
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
 
 export default async function AdminPage() {
   const admin = createServiceSupabase();
