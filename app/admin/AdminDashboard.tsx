@@ -1,6 +1,9 @@
 import type { Track } from "@/lib/tracks";
 import { Activity, BarChart3, Disc3, Music2, Trophy } from "lucide-react";
 
+/** Keep in sync with `ICON_VERSION` in `app/layout.tsx` (favicon cache-bust). */
+const APP_ICON_SRC = "/icon.png?v=3";
+
 export type StatRow = Track & { playCount: number; pct: number };
 
 export function AdminDashboard({
@@ -18,7 +21,7 @@ export function AdminDashboard({
       : "Ingen afspilninger endnu";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#040814] text-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-[#040814] text-white">
       {/* Ambient layers */}
       <div
         aria-hidden
@@ -38,38 +41,51 @@ export function AdminDashboard({
         <header className="mb-10 lg:mb-14">
           <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-10">
             <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 backdrop-blur-md">
-                <BarChart3
-                  className="h-3.5 w-3.5 text-[#7CFF6B]"
-                  strokeWidth={2}
-                  aria-hidden
-                />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
-                  LykkeMusik · admin
-                </span>
-              </div>
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
+                <div className="shrink-0">
+                  <img
+                    src={APP_ICON_SRC}
+                    alt="LykkeMusik"
+                    width={56}
+                    height={56}
+                    className="h-14 w-14 rounded-2xl border border-white/[0.1] bg-white/[0.04] object-cover shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-white/[0.06]"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 backdrop-blur-md">
+                    <BarChart3
+                      className="h-3.5 w-3.5 text-[#7CFF6B]"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/55">
+                      LykkeMusik · admin
+                    </span>
+                  </div>
 
-              <h1 className="mt-5 text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-white sm:text-4xl lg:text-[2.75rem]">
-                Afspilningsstatistik
-              </h1>
+                  <h1 className="mt-5 text-[2rem] font-semibold leading-[1.08] tracking-[-0.03em] text-white sm:text-4xl lg:text-[2.75rem]">
+                    Afspilningsstatistik
+                  </h1>
 
-              <p className="mt-4 max-w-[34rem] text-[15px] leading-[1.65] text-white/48 sm:text-base">
-                Live overblik over, hvor ofte hvert nummer er blevet startet.
-                Hver gang en sang begynder at spille, tæller vi én gang for det
-                pågældende nummer — enkel og retvisende indsigt i jeres
-                LykkeMusik-brug.
-              </p>
+                  <p className="mt-4 max-w-[34rem] text-[15px] leading-[1.65] text-white/48 sm:text-base">
+                    Live overblik over, hvor ofte hvert nummer er blevet startet.
+                    Hver gang en sang begynder at spille, tæller vi én gang for det
+                    pågældende nummer — enkel og retvisende indsigt i jeres
+                    LykkeMusik-brug.
+                  </p>
 
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-[13px] text-white/38">
-                <span className="inline-flex items-center gap-2">
-                  <Music2 className="h-4 w-4 text-[#7CFF6B]/70" strokeWidth={1.75} />
-                  {stats.length} numre i kataloget
-                </span>
-                <span className="hidden h-1 w-1 rounded-full bg-white/20 sm:inline" />
-                <span className="inline-flex items-center gap-2">
-                  <Disc3 className="h-4 w-4 text-[#7CFF6B]/70" strokeWidth={1.75} />
-                  Opdateret pr. sidevisning
-                </span>
+                  <div className="mt-6 flex flex-wrap items-center gap-4 text-[13px] text-white/38">
+                    <span className="inline-flex items-center gap-2">
+                      <Music2 className="h-4 w-4 text-[#7CFF6B]/70" strokeWidth={1.75} />
+                      {stats.length} numre i kataloget
+                    </span>
+                    <span className="hidden h-1 w-1 rounded-full bg-white/20 sm:inline" />
+                    <span className="inline-flex items-center gap-2">
+                      <Disc3 className="h-4 w-4 text-[#7CFF6B]/70" strokeWidth={1.75} />
+                      Opdateret pr. sidevisning
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 

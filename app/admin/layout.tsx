@@ -14,8 +14,9 @@ export const viewport: Viewport = {
 };
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
+  /* Root body uses overflow:hidden for the jukebox; admin needs its own scroll layer. */
   return (
-    <div className="min-h-screen bg-[#040814] antialiased [color-scheme:dark]">
+    <div className="fixed inset-0 overflow-y-auto overflow-x-hidden bg-[#040814] antialiased [color-scheme:dark]">
       {children}
     </div>
   );
