@@ -297,6 +297,7 @@ function getLyrics(trackId: string) {
 /** YouTube video id per track (embed stays in-app). */
 const MUSIC_VIDEO_BY_TRACK_ID: Record<string, string> = {
   "sammen-med-lars": "GNnyhAiJB_M",
+  "vi-er-sammenholdet": "y409Axu7ZOM",
   "vi-er-lykkeliga": "X-2Oj99d7aY",
   "tre-skridt": "n7HKO2cSVks",
 };
