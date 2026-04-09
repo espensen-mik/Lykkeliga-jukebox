@@ -1148,7 +1148,7 @@ export default function Page() {
                 <img
                   src="/lykkeliga-logo.svg"
                   alt="LykkeLiga"
-                  className="h-6 w-auto opacity-90"
+                  className="h-6 w-auto brightness-0 invert opacity-90"
                 />
               </div>
             </div>

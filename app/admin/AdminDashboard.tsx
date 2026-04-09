@@ -24,7 +24,6 @@ export function AdminDashboard({
   totalPlays: number;
   topRecentLabel: string;
 }) {
-  const tracksWithPlays = stats.filter((s) => s.playCount > 0).length;
   const topTrack = stats[0];
   const topLabel =
     topTrack && topTrack.playCount > 0
@@ -125,34 +124,36 @@ export function AdminDashboard({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-4 backdrop-blur-md">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/38">
-                    Sange med afspilninger
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="relative overflow-hidden rounded-2xl border border-[#7CFF6B]/20 bg-gradient-to-br from-[#7CFF6B]/[0.12] via-[#7CFF6B]/[0.06] to-white/[0.02] px-5 py-5 backdrop-blur-md">
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-[#7CFF6B]/15 blur-2xl"
+                  />
+                  <p className="relative flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#c7ffbe]">
+                    <Trophy className="h-3 w-3 text-[#7CFF6B]" strokeWidth={2} />
+                    Mest afspillet total
                   </p>
-                  <p className="mt-2 text-2xl font-semibold tabular-nums text-white/95">
-                    {tracksWithPlays}
-                    <span className="text-base font-normal text-white/35">
-                      {" "}
-                      / {stats.length}
-                    </span>
+                  <p className="relative mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/55">
+                    Alle afspilninger
                   </p>
-                </div>
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-4 backdrop-blur-md">
-                  <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/38">
-                    <Trophy className="h-3 w-3 text-[#7CFF6B]/80" strokeWidth={2} />
-                    Mest afspillet
-                  </p>
-                  <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug text-white/88">
+                  <p className="relative mt-2 line-clamp-2 text-[17px] font-semibold leading-snug text-white">
                     {topLabel}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-4 backdrop-blur-md sm:col-span-2 lg:col-span-1">
-                  <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/38">
-                    <Sparkles className="h-3 w-3 text-[#7CFF6B]/80" strokeWidth={2} />
-                    Mest afspillet (7 dage)
+                <div className="relative overflow-hidden rounded-2xl border border-blue-300/[0.22] bg-gradient-to-br from-blue-400/[0.13] via-blue-300/[0.06] to-white/[0.02] px-5 py-5 backdrop-blur-md">
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-blue-300/20 blur-2xl"
+                  />
+                  <p className="relative flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-100/95">
+                    <Sparkles className="h-3 w-3 text-blue-200" strokeWidth={2} />
+                    Mest afspillet 7 dage
                   </p>
-                  <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug text-white/88">
+                  <p className="relative mt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/55">
+                    Seneste uge
+                  </p>
+                  <p className="relative mt-2 line-clamp-2 text-[17px] font-semibold leading-snug text-white">
                     {topRecentLabel}
                   </p>
                 </div>
@@ -363,6 +364,14 @@ export function AdminDashboard({
           </code>{" "}
           som bogmærke på din computer.
         </p>
+
+        <div className="mt-10 flex justify-center pb-2">
+          <img
+            src="/lykkeliga-logo.svg"
+            alt="LykkeLiga"
+            className="h-7 w-auto brightness-0 invert opacity-90"
+          />
+        </div>
       </div>
     </div>
   );
