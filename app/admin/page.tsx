@@ -42,13 +42,16 @@ export default async function AdminPage() {
   }
 
   const now = Date.now();
+  const oneHourMs = 60 * 60 * 1000;
   const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
   const recentFrom = now - sevenDaysMs;
+  const currentHourFrom = now - oneHourMs;
+  const previousHourFrom = now - oneHourMs * 2;
 
   const counts = new Map<string, number>();
   const recentCounts = new Map<string, number>();
-  let latestTrackId: string | null = null;
-  let latestTs = Number.NEGATIVE_INFINITY;
+  const currentHourCounts = new Map<string, number>();
+  const previousHourCounts = new Map<string, number>();
   for (const r of rows ?? []) {
     const row = r as { track_id: string; created_at: string | null };
     const id = row.track_id;
@@ -56,40 +59,42 @@ export default async function AdminPage() {
 
     const ts = row.created_at ? Date.parse(row.created_at) : Number.NaN;
     if (!Number.isFinite(ts)) continue;
-    if (ts > latestTs) {
-      latestTs = ts;
-      latestTrackId = id;
-    }
 
     if (ts >= recentFrom) {
       recentCounts.set(id, (recentCounts.get(id) ?? 0) + 1);
     }
+    if (ts >= currentHourFrom) {
+      currentHourCounts.set(id, (currentHourCounts.get(id) ?? 0) + 1);
+    } else if (ts >= previousHourFrom && ts < currentHourFrom) {
+      previousHourCounts.set(id, (previousHourCounts.get(id) ?? 0) + 1);
+    }
   }
 
   const totalPlays = [...counts.values()].reduce((a, b) => a + b, 0);
-  const previousCounts = new Map(counts);
-  if (latestTrackId) {
-    const current = previousCounts.get(latestTrackId) ?? 0;
-    if (current > 0) previousCounts.set(latestTrackId, current - 1);
-  }
-
-  const byTotalThenTitle = (a: (typeof tracks)[number], b: (typeof tracks)[number]) => {
+  const byCurrentHourThenTotalThenTitle = (a: (typeof tracks)[number], b: (typeof tracks)[number]) => {
+    const hourDiff = (currentHourCounts.get(b.id) ?? 0) - (currentHourCounts.get(a.id) ?? 0);
+    if (hourDiff !== 0) return hourDiff;
     const totalDiff = (counts.get(b.id) ?? 0) - (counts.get(a.id) ?? 0);
     if (totalDiff !== 0) return totalDiff;
     return a.title.localeCompare(b.title, "da");
   };
-  const byPreviousTotalThenTitle = (a: (typeof tracks)[number], b: (typeof tracks)[number]) => {
-    const totalDiff = (previousCounts.get(b.id) ?? 0) - (previousCounts.get(a.id) ?? 0);
+  const byPreviousHourThenTotalThenTitle = (
+    a: (typeof tracks)[number],
+    b: (typeof tracks)[number],
+  ) => {
+    const hourDiff = (previousHourCounts.get(b.id) ?? 0) - (previousHourCounts.get(a.id) ?? 0);
+    if (hourDiff !== 0) return hourDiff;
+    const totalDiff = (counts.get(b.id) ?? 0) - (counts.get(a.id) ?? 0);
     if (totalDiff !== 0) return totalDiff;
     return a.title.localeCompare(b.title, "da");
   };
 
   const currentRankById = new Map<string, number>();
   const previousRankById = new Map<string, number>();
-  [...tracks].sort(byTotalThenTitle).forEach((t, i) => {
+  [...tracks].sort(byCurrentHourThenTotalThenTitle).forEach((t, i) => {
     currentRankById.set(t.id, i + 1);
   });
-  [...tracks].sort(byPreviousTotalThenTitle).forEach((t, i) => {
+  [...tracks].sort(byPreviousHourThenTotalThenTitle).forEach((t, i) => {
     previousRankById.set(t.id, i + 1);
   });
 
