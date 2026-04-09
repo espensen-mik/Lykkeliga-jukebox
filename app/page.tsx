@@ -9,7 +9,17 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { ArrowUp, MicVocal, Menu, Radio, TvMinimalPlay, X } from "lucide-react";
+import {
+  ArrowUp,
+  Info,
+  Menu,
+  MicVocal,
+  Radio,
+  Smartphone,
+  TrendingUp,
+  TvMinimalPlay,
+  X,
+} from "lucide-react";
 import { tracks } from "@/lib/tracks";
 
 const lyricsByTrackId: Record<string, string> = {
@@ -370,8 +380,8 @@ function ControlButton({
       className={[
         "inline-flex items-center justify-center rounded-full transition active:scale-95",
         primary
-          ? "h-12 w-12 bg-[#7CFF6B] text-[#08132C] shadow-[0_8px_24px_rgba(124,255,107,0.35)]"
-          : "h-10 w-10 bg-white/8 text-white ring-1 ring-white/10 hover:bg-white/12",
+          ? "h-12 w-12 bg-[#7CFF6B] text-[#08132C] shadow-[0_8px_24px_rgba(124,255,107,0.35)] lg:h-9 lg:w-9"
+          : "h-10 w-10 bg-white/8 text-white ring-1 ring-white/10 hover:bg-white/12 lg:h-8 lg:w-8",
       ].join(" ")}
     >
       {children}
@@ -760,12 +770,19 @@ export default function Page() {
     isLandscape && !videoOpen && viewportWidth > 0 && viewportWidth < 1024;
 
   return (
-    <main className="h-[100dvh] overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900 lg:bg-[#e9e1d4] lg:px-8 lg:py-6">
+    <main className="h-[100dvh] overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900 lg:bg-[#ece3d5]">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
-      <div className="flex h-full min-h-0 flex-col lg:mx-auto lg:w-full lg:max-w-[1320px] lg:overflow-hidden lg:rounded-[30px] lg:border lg:border-[#0B1B46]/10 lg:bg-gradient-to-b lg:from-[#f6f1e8] lg:to-[#ece3d5] lg:shadow-[0_30px_80px_rgba(11,27,70,0.16)]">
-        <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7 lg:px-14 lg:pt-10">
+      <div className="flex h-full min-h-0 flex-col">
+        <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7 lg:px-14 lg:pt-8">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
+            <div className="absolute left-0 top-1/2 hidden -translate-y-1/2 lg:flex lg:items-center">
+              <img
+                src="/lykkeliga-logo.svg"
+                alt="LykkeLiga"
+                className="h-8 w-auto opacity-90"
+              />
+            </div>
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
               LykkeMusik
             </h1>
@@ -906,10 +923,10 @@ export default function Page() {
         </section>
 
         <div
-          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white [padding-bottom:env(safe-area-inset-bottom,0px)] lg:mx-8 lg:mb-8 lg:rounded-[26px] lg:border lg:border-white/10 lg:shadow-[0_22px_56px_rgba(8,19,44,0.42)]"
+          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white [padding-bottom:env(safe-area-inset-bottom,0px)] lg:mx-auto lg:mb-3 lg:w-[min(88vw,820px)] lg:rounded-2xl lg:border lg:border-white/10 lg:shadow-[0_18px_45px_rgba(8,19,44,0.34)]"
           aria-label="Afspiller"
         >
-          <div className="mx-auto max-w-6xl px-4 py-3 lg:px-7 lg:py-5">
+          <div className="mx-auto max-w-6xl px-4 py-3 lg:px-5 lg:py-3">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -926,7 +943,7 @@ export default function Page() {
                   void togglePlay();
                 }}
                 aria-label={playing ? "Pause" : "Afspil"}
-                className="h-12 w-12 shrink-0 overflow-hidden rounded-xl transition active:scale-95"
+                className="h-12 w-12 shrink-0 overflow-hidden rounded-xl transition active:scale-95 lg:h-9 lg:w-9 lg:rounded-lg"
               >
                 <img
                   src={current.coverUrl}
@@ -936,10 +953,10 @@ export default function Page() {
               </button>
 
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[15px] font-semibold leading-tight tracking-[-0.02em] text-white">
+                <div className="truncate text-[15px] font-semibold leading-tight tracking-[-0.02em] text-white lg:text-[13px]">
                   {current.title}
                 </div>
-                <div className="mt-0.5 truncate text-[13px] text-white/65">
+                <div className="mt-0.5 truncate text-[13px] text-white/65 lg:text-[11px]">
                   {current.artist}
                 </div>
               </div>
@@ -957,15 +974,15 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="mt-3">
-              <div className="mb-1.5 flex items-center justify-between text-[11px] text-white/55">
+            <div className="mt-3 lg:mt-2">
+              <div className="mb-1.5 flex items-center justify-between text-[11px] text-white/55 lg:text-[10px]">
                 <span>{formatTime(time)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
 
               <ProgressBar value={progress} onChange={seek} />
 
-              <div className="mt-2 flex items-center gap-2 text-[11px] leading-none text-white/55">
+              <div className="mt-2 flex items-center gap-2 text-[11px] leading-none text-white/55 lg:text-[10px]">
                 <span className="shrink-0">
                   {radioMode ? "Radio aktiv" : "Ét nummer"}
                 </span>
@@ -1017,54 +1034,69 @@ export default function Page() {
               onClick={() => setMenuOpen(false)}
             />
             <div
-              className="fixed z-[10001] min-w-[13.75rem] overflow-hidden rounded-2xl border border-white/20 bg-[#08132C]/92 py-1.5 text-left shadow-[0_20px_56px_rgba(11,27,70,0.45)] backdrop-blur-xl ring-1 ring-white/10"
+              className="fixed z-[10001] min-w-[16.5rem] overflow-hidden rounded-2xl border border-[#7CFF6B]/20 bg-[#08132C]/96 py-2 text-left shadow-[0_26px_70px_rgba(8,19,44,0.6)] backdrop-blur-xl ring-1 ring-white/12"
               role="menu"
               style={{
                 top: menuDropdownPos.top,
                 right: menuDropdownPos.right,
               }}
             >
-              <div className="px-4 pb-3 pt-3">
-                <img
-                  src="/lykkeliga-logo.svg"
-                  alt="LykkeLiga"
-                  className="h-6 w-auto opacity-95"
-                />
+              <div className="px-4 pb-2 pt-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">
+                  Menu
+                </p>
               </div>
-              <div className="mx-3 h-px bg-white/15" />
+              <div className="mx-3 h-px bg-white/12" />
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
+                className="group flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={() => {
                   setMenuOpen(false);
                   setMusicInfoOpen(true);
                 }}
               >
-                Om musikken
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white/80 transition group-hover:border-[#7CFF6B]/30 group-hover:bg-[#7CFF6B]/12 group-hover:text-[#7CFF6B]">
+                  <Info className="h-4 w-4" strokeWidth={2} />
+                </span>
+                <span>Om musikken</span>
               </button>
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
+                className="group flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={() => {
                   setMenuOpen(false);
                   setHitlisteOpen(true);
                 }}
               >
-                LykkeHitliste
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white/80 transition group-hover:border-[#7CFF6B]/30 group-hover:bg-[#7CFF6B]/12 group-hover:text-[#7CFF6B]">
+                  <TrendingUp className="h-4 w-4" strokeWidth={2} />
+                </span>
+                <span>LykkeHitliste</span>
               </button>
               <button
                 type="button"
                 role="menuitem"
-                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
+                className="group flex w-full items-center gap-3 px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
                 onClick={() => {
                   setMenuOpen(false);
                   setSaveAsAppOpen(true);
                 }}
               >
-                Gem som app
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white/80 transition group-hover:border-[#7CFF6B]/30 group-hover:bg-[#7CFF6B]/12 group-hover:text-[#7CFF6B]">
+                  <Smartphone className="h-4 w-4" strokeWidth={2} />
+                </span>
+                <span>Gem som app</span>
               </button>
+              <div className="mx-3 mt-2 h-px bg-white/12" />
+              <div className="px-4 pb-2 pt-3">
+                <img
+                  src="/lykkeliga-logo.svg"
+                  alt="LykkeLiga"
+                  className="h-6 w-auto opacity-90"
+                />
+              </div>
             </div>
           </>,
           document.body
@@ -1261,14 +1293,14 @@ export default function Page() {
 
       {hitlisteOpen && (
         <div
-          className="fixed inset-0 z-[642] flex items-center justify-center bg-[#08132C]/30 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[642] flex items-center justify-center bg-[#08132C]/45 p-4 backdrop-blur-md"
           role="presentation"
           onClick={() => setHitlisteOpen(false)}
         >
           <div
             role="dialog"
             aria-modal="true"
-            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-md"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-[#0A1740]/92 px-5 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
@@ -1285,14 +1317,14 @@ export default function Page() {
               </button>
             </div>
 
-            <p className="mt-3 text-[14px] leading-relaxed text-white/75">
+            <p className="mt-3 text-[14px] leading-relaxed text-white/88">
               Her kan du se hvilke 5 sange, der har været spillet mest de
               seneste 7 dage. Er din ynglingssang på listen?
             </p>
 
             <div className="mt-4 space-y-2.5">
               {hitlisteLoading ? (
-                <div className="rounded-xl border border-white/15 bg-white/[0.06] px-3 py-3 text-[14px] text-white/70">
+                <div className="rounded-xl border border-white/20 bg-white/[0.1] px-3 py-3 text-[14px] text-white/90">
                   Henter hitliste...
                 </div>
               ) : null}
@@ -1304,7 +1336,7 @@ export default function Page() {
               ) : null}
 
               {!hitlisteLoading && !hitlisteError && hitlisteItems.length === 0 ? (
-                <div className="rounded-xl border border-white/15 bg-white/[0.06] px-3 py-3 text-[14px] text-white/70">
+                <div className="rounded-xl border border-white/20 bg-white/[0.1] px-3 py-3 text-[14px] text-white/90">
                   Ingen afspilninger fundet for de sidste 7 dage.
                 </div>
               ) : null}
@@ -1313,16 +1345,16 @@ export default function Page() {
                 ? hitlisteItems.map((item, idx) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/[0.06] px-3 py-2.5"
+                      className="flex items-center gap-3 rounded-xl border border-white/20 bg-white/[0.1] px-3 py-2.5"
                     >
-                      <div className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-[12px] font-semibold text-white/85">
+                      <div className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15 text-[12px] font-semibold text-white/95">
                         {idx + 1}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[14px] font-semibold text-white/92">
+                        <p className="truncate text-[14px] font-semibold text-white">
                           {item.title}
                         </p>
-                        <p className="truncate text-[12px] text-white/55">
+                        <p className="truncate text-[12px] text-white/75">
                           {item.artist}
                         </p>
                       </div>
