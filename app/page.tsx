@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { MicVocal, Menu, Radio, TvMinimalPlay, X } from "lucide-react";
+import { ArrowUp, MicVocal, Menu, Radio, TvMinimalPlay, X } from "lucide-react";
 import { tracks } from "@/lib/tracks";
 
 const lyricsByTrackId: Record<string, string> = {
@@ -161,6 +161,70 @@ Tre skridt, tre skridt, tre skridt
 
 3-2-1 hvem hepper vi på?
 LykkeLiga`,
+  "lykken-er-haandbold": `Det er hånd, Det er bold
+Det er os
+Sammenhold
+
+Haller der kalder
+Grib mig hvis jeg falder
+
+Lykken er håndbold
+Det er mit behov
+ikke noget særligt
+Hvis bare jeg får lov
+
+For jeg bruger min
+Hånd, hånd, hånd
+til at spille Bold
+
+Ja, jeg bruger min
+Hånd, hånd, hånd
+til at spille Bold
+
+Det er hånd, Det er bold
+Lykken er
+Ude af kontrol
+
+Haller der kalder
+Ryst med dine balder
+
+Lykken er håndbold
+Det er mit behov
+ikke særligt særligt
+Hvis bare jeg får lov
+
+For jeg bruger min
+Hånd, hånd, hånd
+til at spille Bold
+
+Ja, jeg bruger min
+Hånd, hånd, hånd
+til at spille Bold
+
+Vi er en liga
+I en helt anden liga
+vi er lykke liga
+Verdens vigtigste liga
+
+Det er hånd, Det er bold
+Jeg er varm
+Ikke kold
+
+Haller der kalder
+Klapsalver gjalder
+
+Livet er håndbold
+Mit eneste behov
+ikke noget særligt
+Hvis bare jeg får lov
+
+For Kvisø bruger sin
+Hånd, hånd, hånd
+til at spille Bold
+
+Ja, jeg bruger min
+Hånd, hånd, hånd
+til at spille Bold`,
 };
 
 function getLyrics(trackId: string) {
@@ -338,6 +402,13 @@ function recordPlay(trackId: string): void {
     });
 }
 
+type HitlisteItem = {
+  id: string;
+  title: string;
+  artist: string;
+  isRising: boolean;
+};
+
 export default function Page() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const stripRef = useRef<HTMLDivElement | null>(null);
@@ -354,6 +425,10 @@ export default function Page() {
   const [duration, setDuration] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [musicInfoOpen, setMusicInfoOpen] = useState(false);
+  const [hitlisteOpen, setHitlisteOpen] = useState(false);
+  const [hitlisteLoading, setHitlisteLoading] = useState(false);
+  const [hitlisteError, setHitlisteError] = useState<string>("");
+  const [hitlisteItems, setHitlisteItems] = useState<HitlisteItem[]>([]);
   const [saveAsAppOpen, setSaveAsAppOpen] = useState(false);
   const [lyricsOpen, setLyricsOpen] = useState(false);
   const [lyricsTrackId, setLyricsTrackId] = useState<string>("");
@@ -558,6 +633,15 @@ export default function Page() {
   }, [musicInfoOpen]);
 
   useEffect(() => {
+    if (!hitlisteOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setHitlisteOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [hitlisteOpen]);
+
+  useEffect(() => {
     if (!saveAsAppOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSaveAsAppOpen(false);
@@ -565,6 +649,42 @@ export default function Page() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [saveAsAppOpen]);
+
+  useEffect(() => {
+    if (!hitlisteOpen) return;
+    let cancelled = false;
+
+    const loadHitliste = async () => {
+      setHitlisteLoading(true);
+      setHitlisteError("");
+      try {
+        const res = await fetch("/api/hitliste", { cache: "no-store" });
+        const data = (await res.json()) as
+          | { ok: true; items: HitlisteItem[] }
+          | { ok: false; error?: string };
+        if (cancelled) return;
+        if (!res.ok || !data || !("ok" in data) || !data.ok) {
+          setHitlisteItems([]);
+          setHitlisteError(
+            "Kunne ikke hente hitlisten lige nu. Prøv igen om lidt.",
+          );
+          return;
+        }
+        setHitlisteItems(data.items ?? []);
+      } catch {
+        if (cancelled) return;
+        setHitlisteItems([]);
+        setHitlisteError("Kunne ikke hente hitlisten lige nu. Prøv igen om lidt.");
+      } finally {
+        if (!cancelled) setHitlisteLoading(false);
+      }
+    };
+
+    void loadHitliste();
+    return () => {
+      cancelled = true;
+    };
+  }, [hitlisteOpen]);
 
   const togglePlay = async () => {
     const audio = audioRef.current;
@@ -640,11 +760,11 @@ export default function Page() {
     isLandscape && !videoOpen && viewportWidth > 0 && viewportWidth < 1024;
 
   return (
-    <main className="h-[100dvh] overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900 lg:bg-[#ebe3d6]">
+    <main className="h-[100dvh] overflow-hidden bg-gradient-to-b from-[#faf8f3] via-[#f5f0e6] to-[#ebe3d6] text-slate-900 lg:bg-[#e9e1d4] lg:px-8 lg:py-6">
       <audio ref={audioRef} preload="metadata" className="hidden" />
 
-      <div className="flex h-full min-h-0 flex-col lg:mx-auto lg:max-w-5xl lg:shadow-[0_0_0_1px_rgba(11,27,70,0.06)]">
-        <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7 lg:px-10 lg:pt-9">
+      <div className="flex h-full min-h-0 flex-col lg:mx-auto lg:w-full lg:max-w-[1320px] lg:overflow-hidden lg:rounded-[30px] lg:border lg:border-[#0B1B46]/10 lg:bg-gradient-to-b lg:from-[#f6f1e8] lg:to-[#ece3d5] lg:shadow-[0_30px_80px_rgba(11,27,70,0.16)]">
+        <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7 lg:px-14 lg:pt-10">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
               LykkeMusik
@@ -663,8 +783,8 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="relative z-0 mt-5 flex flex-col items-center gap-3 px-5 lg:mt-6">
-            <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:max-w-lg">
+          <div className="relative z-0 mt-5 flex flex-col items-center gap-3 px-5 lg:mt-7 lg:items-start lg:px-0">
+            <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:max-w-none lg:justify-start">
               <div className="flex items-center gap-2">
                 <Radio
                   className="h-6 w-6 shrink-0 text-[#0B1B46]"
@@ -684,17 +804,17 @@ export default function Page() {
                 }
               />
             </div>
-            <p className="max-w-[min(100%,22rem)] text-center text-[13px] leading-snug text-[#0B1B46]/70">
+            <p className="max-w-[min(100%,22rem)] text-center text-[13px] leading-snug text-[#0B1B46]/70 lg:max-w-[34rem] lg:text-left lg:text-[14px]">
               Tænd for LykkeRadioen - så spiller den lykkelige musik i
               uendelighed
             </p>
           </div>
         </header>
 
-        <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center overflow-hidden pt-4 lg:pt-6">
+        <section className="relative z-0 flex min-h-0 flex-1 flex-col justify-center overflow-hidden pt-4 lg:pt-8">
           <div
             ref={stripRef}
-            className="juke-carousel-strip scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-[11vw] pb-3 lg:gap-5 lg:px-10 lg:pb-5"
+            className="juke-carousel-strip scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-[11vw] pb-3 lg:gap-6 lg:px-14 lg:pb-8"
           >
             {tracks.map((track, i) => {
               const active = i === index;
@@ -704,7 +824,7 @@ export default function Page() {
                   key={track.id}
                   data-index={i}
                   onClick={() => selectTrack(i)}
-                  className="flex w-[68vw] max-w-[300px] shrink-0 snap-center flex-col text-left lg:w-64 lg:max-w-none"
+                  className="flex w-[68vw] max-w-[300px] shrink-0 snap-center flex-col text-left lg:w-[250px] lg:max-w-none"
                 >
                   <div
                     className={[
@@ -771,11 +891,11 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col pb-1 pl-3 pr-1 pt-2.5">
-                    <div className="line-clamp-2 min-h-[2.1em] text-[18px] font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1B46]">
+                  <div className="flex flex-col pb-1 pl-3 pr-1 pt-2.5 lg:pt-3">
+                    <div className="line-clamp-2 min-h-[2.1em] text-[18px] font-semibold leading-[1.05] tracking-[-0.03em] text-[#0B1B46] lg:text-[21px]">
                       {track.title}
                     </div>
-                    <div className="mt-1 min-h-[1.35rem] text-[14px] leading-snug text-slate-500">
+                    <div className="mt-1 min-h-[1.35rem] text-[14px] leading-snug text-slate-500 lg:text-[15px]">
                       Kunstner: {track.artist}
                     </div>
                   </div>
@@ -786,10 +906,10 @@ export default function Page() {
         </section>
 
         <div
-          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white [padding-bottom:env(safe-area-inset-bottom,0px)] lg:rounded-t-2xl lg:border lg:border-white/10 lg:border-b-0 lg:shadow-[0_-8px_40px_rgba(0,0,0,0.12)]"
+          className="shrink-0 border-t border-slate-200 bg-[#08132C] text-white [padding-bottom:env(safe-area-inset-bottom,0px)] lg:mx-8 lg:mb-8 lg:rounded-[26px] lg:border lg:border-white/10 lg:shadow-[0_22px_56px_rgba(8,19,44,0.42)]"
           aria-label="Afspiller"
         >
-          <div className="mx-auto max-w-6xl px-4 py-3 lg:px-6 lg:py-4">
+          <div className="mx-auto max-w-6xl px-4 py-3 lg:px-7 lg:py-5">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -922,6 +1042,17 @@ export default function Page() {
                 }}
               >
                 Om musikken
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="block w-full px-4 py-2.5 text-left text-[15px] font-medium text-white/90 transition hover:bg-white/10"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setHitlisteOpen(true);
+                }}
+              >
+                LykkeHitliste
               </button>
               <button
                 type="button"
@@ -1120,6 +1251,97 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setMusicInfoOpen(false)}
+              className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
+            >
+              Luk
+            </button>
+          </div>
+        </div>
+      )}
+
+      {hitlisteOpen && (
+        <div
+          className="fixed inset-0 z-[642] flex items-center justify-center bg-[#08132C]/30 p-4 backdrop-blur-md"
+          role="presentation"
+          onClick={() => setHitlisteOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-white/10 px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="pr-2 text-lg font-semibold leading-snug text-white/95">
+                LykkeHitliste
+              </h2>
+              <button
+                type="button"
+                onClick={() => setHitlisteOpen(false)}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                aria-label="Luk"
+              >
+                <X className="h-5 w-5" strokeWidth={2} />
+              </button>
+            </div>
+
+            <p className="mt-3 text-[14px] leading-relaxed text-white/75">
+              Her kan du se hvilke 5 sange, der har været spillet mest de
+              seneste 7 dage. Er din ynglingssang på listen?
+            </p>
+
+            <div className="mt-4 space-y-2.5">
+              {hitlisteLoading ? (
+                <div className="rounded-xl border border-white/15 bg-white/[0.06] px-3 py-3 text-[14px] text-white/70">
+                  Henter hitliste...
+                </div>
+              ) : null}
+
+              {!hitlisteLoading && hitlisteError ? (
+                <div className="rounded-xl border border-red-300/35 bg-red-300/10 px-3 py-3 text-[14px] text-red-100">
+                  {hitlisteError}
+                </div>
+              ) : null}
+
+              {!hitlisteLoading && !hitlisteError && hitlisteItems.length === 0 ? (
+                <div className="rounded-xl border border-white/15 bg-white/[0.06] px-3 py-3 text-[14px] text-white/70">
+                  Ingen afspilninger fundet for de sidste 7 dage.
+                </div>
+              ) : null}
+
+              {!hitlisteLoading && !hitlisteError
+                ? hitlisteItems.map((item, idx) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/[0.06] px-3 py-2.5"
+                    >
+                      <div className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-[12px] font-semibold text-white/85">
+                        {idx + 1}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[14px] font-semibold text-white/92">
+                          {item.title}
+                        </p>
+                        <p className="truncate text-[12px] text-white/55">
+                          {item.artist}
+                        </p>
+                      </div>
+                      {item.isRising ? (
+                        <span
+                          className="inline-flex items-center gap-1 rounded-full border border-[#7CFF6B]/35 bg-[#7CFF6B]/12 px-2 py-1 text-[11px] font-semibold text-[#7CFF6B]"
+                          title="Stiger på hitlisten"
+                        >
+                          <ArrowUp className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        </span>
+                      ) : null}
+                    </div>
+                  ))
+                : null}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setHitlisteOpen(false)}
               className="mt-5 w-full rounded-2xl border border-white/20 bg-white/10 py-3 text-[15px] font-semibold text-white transition active:scale-[0.99] hover:bg-white/15"
             >
               Luk

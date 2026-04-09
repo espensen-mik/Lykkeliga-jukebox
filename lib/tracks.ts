@@ -103,6 +103,15 @@ export const tracks: Track[] = [
     coverUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/03/cover_3skridt.jpg",
   },
+  {
+    id: "lykken-er-haandbold",
+    title: "Lykken er håndbold",
+    artist: "Kviesø YoungStars",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/04/Lykken-er-haandbold.mp3",
+    coverUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/04/lykkenerhaandbold.jpg",
+  },
 ];
 
 export const TRACK_IDS = new Set(tracks.map((t) => t.id));
