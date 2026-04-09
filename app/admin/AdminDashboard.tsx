@@ -225,7 +225,7 @@ export function AdminDashboard({
                           {row.rankDelta > 0 ? (
                             <span
                               className="inline-flex shrink-0 items-center rounded-full border border-[#7CFF6B]/30 bg-[#7CFF6B]/10 px-1.5 py-0.5 text-[#7CFF6B]"
-                              title={`Op ${row.rankDelta} plads${row.rankDelta > 1 ? "er" : ""} (sidste 7 dage)`}
+                              title={`Op ${row.rankDelta} plads${row.rankDelta > 1 ? "er" : ""} siden sidste afspilning`}
                             >
                               <ArrowUp className="h-3 w-3" strokeWidth={2.25} />
                             </span>
@@ -233,7 +233,7 @@ export function AdminDashboard({
                           {row.rankDelta < 0 ? (
                             <span
                               className="inline-flex shrink-0 items-center rounded-full border border-red-400/35 bg-red-400/10 px-1.5 py-0.5 text-red-300"
-                              title={`Ned ${Math.abs(row.rankDelta)} plads${Math.abs(row.rankDelta) > 1 ? "er" : ""} (sidste 7 dage)`}
+                              title={`Ned ${Math.abs(row.rankDelta)} plads${Math.abs(row.rankDelta) > 1 ? "er" : ""} siden sidste afspilning`}
                             >
                               <ArrowDown className="h-3 w-3" strokeWidth={2.25} />
                             </span>
@@ -325,7 +325,7 @@ export function AdminDashboard({
                     {row.rankDelta > 0 ? (
                       <span
                         className="inline-flex items-center rounded-full border border-[#7CFF6B]/30 bg-[#7CFF6B]/10 px-1.5 py-0.5 text-[#7CFF6B]"
-                        title={`Op ${row.rankDelta} plads${row.rankDelta > 1 ? "er" : ""} (sidste 7 dage)`}
+                        title={`Op ${row.rankDelta} plads${row.rankDelta > 1 ? "er" : ""} siden sidste afspilning`}
                       >
                         <ArrowUp className="h-3 w-3" strokeWidth={2.25} />
                       </span>
@@ -333,7 +333,7 @@ export function AdminDashboard({
                     {row.rankDelta < 0 ? (
                       <span
                         className="inline-flex items-center rounded-full border border-red-400/35 bg-red-400/10 px-1.5 py-0.5 text-red-300"
-                        title={`Ned ${Math.abs(row.rankDelta)} plads${Math.abs(row.rankDelta) > 1 ? "er" : ""} (sidste 7 dage)`}
+                        title={`Ned ${Math.abs(row.rankDelta)} plads${Math.abs(row.rankDelta) > 1 ? "er" : ""} siden sidste afspilning`}
                       >
                         <ArrowDown className="h-3 w-3" strokeWidth={2.25} />
                       </span>
