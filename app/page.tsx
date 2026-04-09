@@ -235,6 +235,56 @@ til at spille Bold
 Ja, jeg bruger min
 Hånd, hånd, hånd
 til at spille Bold`,
+  "saarn-goer-jeg-naar-jeg-scorer": `Sårn gør jeg når jeg scorer
+
+Åhhhh - Vi vandt igen
+Man skal fejre sine sejre
+vi vandt igen
+Jeg var bedre end jeg plejar
+Og vi vandt igen
+
+Se mig når jeg scorer
+Sårn gør jeg når jeg scorer
+Jeg er ét - og du er toer
+Sårn gør jeg når jeg scorer
+
+[dance break]
+SIIIIIIU
+JAEHHHHHH
+Let’s go
+
+Åhhhh - Kvisø vandt igen
+Man skal fejre sine sejre
+Og vi vandt igen
+Vi var bedre end vi plejer
+Og vi vandt igen
+
+Se mig når jeg scorer
+Sårn gør jeg når jeg scorer
+Jeg er ét - og du er toer
+Sårn gør jeg når jeg scorer
+
+[dance break]
+SIIUUUUU
+JAEHHHHHH
+Let’s go
+
+LykkeLiga vandt igen
+Vores liga taler sandt igen
+tramper som en elefant igen
+
+Se mig når jeg scorer
+Sårn gør jeg når jeg scorer
+Jeg er ét - og du er toer
+Sårn gør jeg når jeg scorer
+
+[dance break]
+SIIUUUUU
+JEEEENS
+Trænerens tur
+
+Vi er grønne, vi er blå
+vi er ikke til at slå`,
 };
 
 function getLyrics(trackId: string) {
@@ -776,13 +826,6 @@ export default function Page() {
       <div className="flex h-full min-h-0 flex-col">
         <header className="safe-area-top relative z-[200] shrink-0 px-5 pt-7 lg:px-14 lg:pt-8">
           <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
-            <div className="absolute left-0 top-1/2 hidden -translate-y-1/2 lg:flex lg:items-center">
-              <img
-                src="/lykkeliga-logo.svg"
-                alt="LykkeLiga"
-                className="h-8 w-auto opacity-90"
-              />
-            </div>
             <h1 className="text-center text-[28px] font-semibold leading-tight tracking-[-0.04em] text-[#0B1B46] md:text-[36px]">
               LykkeMusik
             </h1>
@@ -800,8 +843,8 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="relative z-0 mt-5 flex flex-col items-center gap-3 px-5 lg:mt-7 lg:items-start lg:px-0">
-            <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:max-w-none lg:justify-start">
+          <div className="relative z-0 mt-5 flex flex-col items-center gap-3 px-5 lg:mt-7 lg:items-center lg:px-0">
+            <div className="flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:max-w-none lg:justify-center">
               <div className="flex items-center gap-2">
                 <Radio
                   className="h-6 w-6 shrink-0 text-[#0B1B46]"
@@ -821,7 +864,7 @@ export default function Page() {
                 }
               />
             </div>
-            <p className="max-w-[min(100%,22rem)] text-center text-[13px] leading-snug text-[#0B1B46]/70 lg:max-w-[34rem] lg:text-left lg:text-[14px]">
+            <p className="max-w-[min(100%,22rem)] text-center text-[13px] leading-snug text-[#0B1B46]/70 lg:max-w-[34rem] lg:text-center lg:text-[14px]">
               Tænd for LykkeRadioen - så spiller den lykkelige musik i
               uendelighed
             </p>
@@ -953,10 +996,10 @@ export default function Page() {
               </button>
 
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[15px] font-semibold leading-tight tracking-[-0.02em] text-white lg:text-[13px]">
+                <div className="truncate text-[15px] font-semibold leading-tight tracking-[-0.02em] text-white lg:text-[16px]">
                   {current.title}
                 </div>
-                <div className="mt-0.5 truncate text-[13px] text-white/65 lg:text-[11px]">
+                <div className="mt-0.5 truncate text-[13px] text-white/65 lg:text-[14px]">
                   {current.artist}
                 </div>
               </div>
@@ -975,14 +1018,14 @@ export default function Page() {
             </div>
 
             <div className="mt-3 lg:mt-2">
-              <div className="mb-1.5 flex items-center justify-between text-[11px] text-white/55 lg:text-[10px]">
+              <div className="mb-1.5 flex items-center justify-between text-[11px] text-white/55 lg:text-[12px]">
                 <span>{formatTime(time)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
 
               <ProgressBar value={progress} onChange={seek} />
 
-              <div className="mt-2 flex items-center gap-2 text-[11px] leading-none text-white/55 lg:text-[10px]">
+              <div className="mt-2 flex items-center gap-2 text-[11px] leading-none text-white/55 lg:text-[12px]">
                 <span className="shrink-0">
                   {radioMode ? "Radio aktiv" : "Ét nummer"}
                 </span>
@@ -1021,6 +1064,17 @@ export default function Page() {
             </div>
           </div>
         </div>
+
+        <div
+          className="hidden shrink-0 justify-center pb-4 pt-2 lg:mt-auto lg:flex"
+          aria-hidden
+        >
+          <img
+            src="/lykkeliga-logo.svg"
+            alt=""
+            className="h-7 w-auto opacity-90"
+          />
+        </div>
       </div>
 
       {mounted &&
@@ -1042,7 +1096,7 @@ export default function Page() {
               }}
             >
               <div className="px-4 pb-2 pt-2">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/45">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/70">
                   Menu
                 </p>
               </div>
@@ -1293,31 +1347,31 @@ export default function Page() {
 
       {hitlisteOpen && (
         <div
-          className="fixed inset-0 z-[642] flex items-center justify-center bg-[#08132C]/45 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[642] flex items-center justify-center bg-[#08132C]/45 p-4 text-white backdrop-blur-md"
           role="presentation"
           onClick={() => setHitlisteOpen(false)}
         >
           <div
             role="dialog"
             aria-modal="true"
-            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-[#0A1740]/92 px-5 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/20 bg-[#08132C] px-5 py-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.45)] [color-scheme:dark] lg:backdrop-blur-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
-              <h2 className="pr-2 text-lg font-semibold leading-snug text-white/95">
+              <h2 className="pr-2 text-lg font-semibold leading-snug !text-white">
                 LykkeHitliste
               </h2>
               <button
                 type="button"
                 onClick={() => setHitlisteOpen(false)}
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white transition hover:bg-white/10"
                 aria-label="Luk"
               >
                 <X className="h-5 w-5" strokeWidth={2} />
               </button>
             </div>
 
-            <p className="mt-3 text-[14px] leading-relaxed text-white/88">
+            <p className="mt-3 text-[14px] leading-relaxed text-white/90">
               Her kan du se hvilke 5 sange, der har været spillet mest de
               seneste 7 dage. Er din ynglingssang på listen?
             </p>

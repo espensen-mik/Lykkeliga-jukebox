@@ -112,6 +112,14 @@ export const tracks: Track[] = [
     coverUrl:
       "https://lykkeliga.dk/wp-content/uploads/2026/04/lykkenerhaandbold.jpg",
   },
+  {
+    id: "saarn-goer-jeg-naar-jeg-scorer",
+    title: "Sårn gør jeg når jeg scorer",
+    artist: "Kviesø YoungStars",
+    audioUrl:
+      "https://lykkeliga.dk/wp-content/uploads/2026/04/Saarn-goer-jeg-naar-jeg-scorer.mp3",
+    coverUrl: "https://lykkeliga.dk/wp-content/uploads/2026/04/saarngoerjeg.jpg",
+  },
 ];
 
 export const TRACK_IDS = new Set(tracks.map((t) => t.id));

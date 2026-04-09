@@ -1,17 +1,28 @@
 import type { Track } from "@/lib/tracks";
-import { Activity, BarChart3, Disc3, Music2, Trophy } from "lucide-react";
+import {
+  Activity,
+  ArrowDown,
+  ArrowUp,
+  BarChart3,
+  Disc3,
+  Music2,
+  Sparkles,
+  Trophy,
+} from "lucide-react";
 
 /** Keep in sync with `ICON_VERSION` in `app/layout.tsx` (favicon cache-bust). */
 const APP_ICON_SRC = "/icon.png?v=3";
 
-export type StatRow = Track & { playCount: number; pct: number };
+export type StatRow = Track & { playCount: number; pct: number; rankDelta: number };
 
 export function AdminDashboard({
   stats,
   totalPlays,
+  topRecentLabel,
 }: {
   stats: StatRow[];
   totalPlays: number;
+  topRecentLabel: string;
 }) {
   const tracksWithPlays = stats.filter((s) => s.playCount > 0).length;
   const topTrack = stats[0];
@@ -114,7 +125,7 @@ export function AdminDashboard({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-4 backdrop-blur-md">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/38">
                     Sange med afspilninger
@@ -134,6 +145,15 @@ export function AdminDashboard({
                   </p>
                   <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug text-white/88">
                     {topLabel}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-4 backdrop-blur-md sm:col-span-2 lg:col-span-1">
+                  <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/38">
+                    <Sparkles className="h-3 w-3 text-[#7CFF6B]/80" strokeWidth={2} />
+                    Mest afspillet (7 dage)
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug text-white/88">
+                    {topRecentLabel}
                   </p>
                 </div>
               </div>
@@ -199,7 +219,25 @@ export function AdminDashboard({
                         </span>
                       </td>
                       <td className="max-w-[12rem] px-4 py-5 align-middle font-medium text-white/95 lg:max-w-none">
-                        {row.title}
+                        <div className="flex items-center gap-2">
+                          <span className="truncate">{row.title}</span>
+                          {row.rankDelta > 0 ? (
+                            <span
+                              className="inline-flex shrink-0 items-center rounded-full border border-[#7CFF6B]/30 bg-[#7CFF6B]/10 px-1.5 py-0.5 text-[#7CFF6B]"
+                              title={`Op ${row.rankDelta} plads${row.rankDelta > 1 ? "er" : ""} (sidste 7 dage)`}
+                            >
+                              <ArrowUp className="h-3 w-3" strokeWidth={2.25} />
+                            </span>
+                          ) : null}
+                          {row.rankDelta < 0 ? (
+                            <span
+                              className="inline-flex shrink-0 items-center rounded-full border border-red-400/35 bg-red-400/10 px-1.5 py-0.5 text-red-300"
+                              title={`Ned ${Math.abs(row.rankDelta)} plads${Math.abs(row.rankDelta) > 1 ? "er" : ""} (sidste 7 dage)`}
+                            >
+                              <ArrowDown className="h-3 w-3" strokeWidth={2.25} />
+                            </span>
+                          ) : null}
+                        </div>
                       </td>
                       <td className="hidden px-4 py-5 align-middle text-[14px] text-white/42 lg:table-cell">
                         {row.artist}
@@ -281,7 +319,25 @@ export function AdminDashboard({
                   </span>
                 </div>
                 <h3 className="mt-3 text-[15px] font-semibold leading-snug text-white/95">
-                  {row.title}
+                  <span className="inline-flex items-center gap-2">
+                    <span>{row.title}</span>
+                    {row.rankDelta > 0 ? (
+                      <span
+                        className="inline-flex items-center rounded-full border border-[#7CFF6B]/30 bg-[#7CFF6B]/10 px-1.5 py-0.5 text-[#7CFF6B]"
+                        title={`Op ${row.rankDelta} plads${row.rankDelta > 1 ? "er" : ""} (sidste 7 dage)`}
+                      >
+                        <ArrowUp className="h-3 w-3" strokeWidth={2.25} />
+                      </span>
+                    ) : null}
+                    {row.rankDelta < 0 ? (
+                      <span
+                        className="inline-flex items-center rounded-full border border-red-400/35 bg-red-400/10 px-1.5 py-0.5 text-red-300"
+                        title={`Ned ${Math.abs(row.rankDelta)} plads${Math.abs(row.rankDelta) > 1 ? "er" : ""} (sidste 7 dage)`}
+                      >
+                        <ArrowDown className="h-3 w-3" strokeWidth={2.25} />
+                      </span>
+                    ) : null}
+                  </span>
                 </h3>
                 <p className="mt-1 text-[13px] text-white/42">{row.artist}</p>
                 <div className="mt-4 flex items-center gap-3">
